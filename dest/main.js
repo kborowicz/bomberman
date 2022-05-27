@@ -58,127 +58,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/game/AStart.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ AStar)
-/* harmony export */ });
-/* harmony import */ var heap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/heap/index.js");
-/* harmony import */ var heap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(heap__WEBPACK_IMPORTED_MODULE_0__);
-
-class AStar {
-    static run(c0, c1) {
-        const heap = new (heap__WEBPACK_IMPORTED_MODULE_0___default())((a, b) => a.fscore - b.fscore);
-        const nodes = new Map();
-        const startNode = new Node(c0);
-        startNode.gscore = 0;
-        startNode.fscore = 0;
-        startNode.opened = true;
-        heap.push(startNode);
-        // nodes.set(startNode.cell.hash);
-        while (!heap.empty()) {
-            const currentNode = heap.pop();
-            currentNode.closed = true;
-            if (currentNode.cell == c1) {
-                return currentNode.backtrace().map(node => node.cell);
-            }
-            currentNode.cell.neighbors.forEach(neighborCell => {
-                var _a;
-                const neighborNode = (_a = nodes.get(neighborCell.hash)) !== null && _a !== void 0 ? _a : new Node(neighborCell);
-                if (!nodes.has(neighborCell.hash)) {
-                    nodes.set(neighborCell.hash, neighborNode);
-                }
-                if (neighborNode.closed || neighborCell.isWall) {
-                    return;
-                }
-                const x1 = currentNode.cell.col;
-                const y1 = currentNode.cell.row;
-                const x2 = neighborCell.col;
-                const y2 = neighborCell.row;
-                // get the distance between current node and the neighbor
-                // and calculate the next g score
-                const cost = (x2 - x1 === 0 || y2 - y1 === 0) ? 1 : Math.SQRT2;
-                const ngscore = currentNode.gscore + cost;
-                if (!neighborNode.opened || ngscore < neighborNode.gscore) {
-                    neighborNode.gscore = ngscore;
-                    neighborNode.fscore = ngscore + this.heuristic(neighborCell, c1);
-                    neighborNode.parent = currentNode;
-                    if (!neighborNode.opened) {
-                        heap.push(neighborNode);
-                        neighborNode.opened = true;
-                    }
-                    else {
-                        heap.updateItem(neighborNode);
-                    }
-                }
-            });
-        }
-        console.log('error');
-    }
-    static heuristic(c0, c1) {
-        // Manhattan distance
-        const d1 = Math.abs(c1.col - c0.col);
-        const d2 = Math.abs(c1.row - c0.row);
-        return (d1 + d2);
-        return (c1.col - c0.col) ** 2 + (c1.row - c0.row) ** 2;
-    }
-}
-class Node {
-    constructor(cell) {
-        Object.defineProperty(this, "cell", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "parent", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "opened", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "closed", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "gscore", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "fscore", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        this.cell = cell;
-    }
-    backtrace() {
-        const backtrace = [this];
-        let currentNode = this.parent;
-        while (currentNode) {
-            backtrace.push(currentNode);
-            currentNode = currentNode.parent;
-        }
-        return backtrace;
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/game/Bresenham.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -226,11 +105,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
 /* harmony import */ var _assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/assets/levels/level2.json");
-/* harmony import */ var _AStart__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/AStart.ts");
-/* harmony import */ var _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/loader/LevelLoader.ts");
-/* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/Player.ts");
-/* harmony import */ var _Resources__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/game/Resources.ts");
-
+/* harmony import */ var _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/loader/LevelLoader.ts");
+/* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/Player.ts");
+/* harmony import */ var _Resources__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/Resources.ts");
 
 
 
@@ -259,25 +136,11 @@ class Game {
         this.app = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Application();
         document.getElementById('root').append(this.app.view);
         this.initialize();
-        // this.init();
-        // Add a ticker callback to move the sprite back and forth
-        // let elapsed = 0.0;
-        // this.app.ticker.add((delta) => {
-        //     elapsed += delta;
-        //     sprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
-        // });
     }
     async initialize() {
-        await _Resources__WEBPACK_IMPORTED_MODULE_5__["default"].initialize();
-        this.board = _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_3__["default"].load(_assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_1__);
-        this.player = new _Player__WEBPACK_IMPORTED_MODULE_4__["default"](this);
-        // const path = BreadFirstSearch.run(
-        //     this.board,
-        //     this.board.getCellAt(1, 1),
-        //     this.board.getCellAt(7, 1)
-        // );
-        const path = _AStart__WEBPACK_IMPORTED_MODULE_2__["default"].run(this.board.getCellAt(1, 1), this.board.getCellAt(7, 1));
-        path.forEach(c => c.setAsWood());
+        await _Resources__WEBPACK_IMPORTED_MODULE_4__["default"].initialize();
+        this.board = _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_2__["default"].load(_assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_1__);
+        this.player = new _Player__WEBPACK_IMPORTED_MODULE_3__["default"](this);
         this.app.stage.addChild(this.board.renderable);
         this.app.stage.addChild(this.player.renderable);
         this.app.screen.width = this.board.renderable.width;
@@ -370,7 +233,7 @@ class Player {
             }
         });
         app.ticker.add(timeDelta => {
-            const speed = 3.5;
+            const speed = 4.5;
             const movementDelta = timeDelta * speed;
             let dx = (+this.isDownA * (-1) + +this.isDownD * (+1)) * movementDelta;
             let dy = (+this.isDownW * (-1) + +this.isDownS * (+1)) * movementDelta;
@@ -469,12 +332,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
 /* harmony import */ var _BoardCell__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/board/BoardCell.ts");
 /* harmony import */ var _BoardCellsTree__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/board/BoardCellsTree.ts");
+/* harmony import */ var _PathFinder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/board/PathFinder.ts");
+
 
 
 
 class Board {
     constructor(props = null) {
         Object.defineProperty(this, "cellsContainer", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "pathFinder", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -494,6 +365,7 @@ class Board {
         });
         const { cellSize = 40 } = props !== null && props !== void 0 ? props : {};
         this.cellSize = cellSize;
+        this.pathFinder = new _PathFinder__WEBPACK_IMPORTED_MODULE_3__["default"]();
         this.cellsContainer = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Container();
         this.cellsTree = new _BoardCellsTree__WEBPACK_IMPORTED_MODULE_2__["default"](cell => this.cellsContainer.addChild(cell.renderable), cell => this.cellsContainer.removeChild(cell.renderable));
     }
@@ -611,70 +483,6 @@ class BoardCell {
     }
     get isWall() {
         return this._isWall;
-    }
-    get wCell() {
-        return this.board.getCellAt(this.col - 1, this.row);
-    }
-    get wMove() {
-        var _a;
-        return ((_a = this.eCell) === null || _a === void 0 ? void 0 : _a.isWall) === false;
-    }
-    get sCell() {
-        return this.board.getCellAt(this.col, this.row - 1);
-    }
-    get sMove() {
-        var _a;
-        return ((_a = this.eCell) === null || _a === void 0 ? void 0 : _a.isWall) === false;
-    }
-    get eCell() {
-        return this.board.getCellAt(this.col + 1, this.row);
-    }
-    get eMove() {
-        var _a;
-        return ((_a = this.eCell) === null || _a === void 0 ? void 0 : _a.isWall) === false;
-    }
-    get nCell() {
-        return this.board.getCellAt(this.col, this.row + 1);
-    }
-    get nMove() {
-        var _a;
-        return ((_a = this.nCell) === null || _a === void 0 ? void 0 : _a.isWall) === false;
-    }
-    get nwCell() {
-        return this.board.getCellAt(this.col - 1, this.row - 1);
-    }
-    get nwMove() {
-        var _a, _b, _c;
-        return (((_a = this.nwCell) === null || _a === void 0 ? void 0 : _a.isWall) === false &&
-            ((_b = this.nCell) === null || _b === void 0 ? void 0 : _b.isWall) === false &&
-            ((_c = this.wCell) === null || _c === void 0 ? void 0 : _c.isWall) === false);
-    }
-    get swCell() {
-        return this.board.getCellAt(this.col - 1, this.row + 1);
-    }
-    get swMove() {
-        var _a, _b, _c;
-        return (((_a = this.swCell) === null || _a === void 0 ? void 0 : _a.isWall) === false &&
-            ((_b = this.sCell) === null || _b === void 0 ? void 0 : _b.isWall) === false &&
-            ((_c = this.wCell) === null || _c === void 0 ? void 0 : _c.isWall) === false);
-    }
-    get seCell() {
-        return this.board.getCellAt(this.col + 1, this.row + 1);
-    }
-    get seMove() {
-        var _a, _b, _c;
-        return (((_a = this.seCell) === null || _a === void 0 ? void 0 : _a.isWall) === false &&
-            ((_b = this.sCell) === null || _b === void 0 ? void 0 : _b.isWall) === false &&
-            ((_c = this.eCell) === null || _c === void 0 ? void 0 : _c.isWall) === false);
-    }
-    get neCell() {
-        return this.board.getCellAt(this.col + 1, this.row - 1);
-    }
-    get neMove() {
-        var _a, _b, _c;
-        return (((_a = this.neCell) === null || _a === void 0 ? void 0 : _a.isWall) === false &&
-            ((_b = this.nCell) === null || _b === void 0 ? void 0 : _b.isWall) === false &&
-            ((_c = this.eCell) === null || _c === void 0 ? void 0 : _c.isWall) === false);
     }
     setAsWall(isDestroyable = false) {
         this._isWall = true;
@@ -794,6 +602,127 @@ class Tree extends (rbush__WEBPACK_IMPORTED_MODULE_0___default()) {
 
 /***/ }),
 
+/***/ "./src/game/board/PathFinder.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ PathFinder)
+/* harmony export */ });
+/* harmony import */ var heap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/heap/index.js");
+/* harmony import */ var heap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(heap__WEBPACK_IMPORTED_MODULE_0__);
+
+class PathFinder {
+    run(c0, c1) {
+        const heap = new (heap__WEBPACK_IMPORTED_MODULE_0___default())((a, b) => a.fscore - b.fscore);
+        const nodes = new Map();
+        const startNode = new Node(c0);
+        startNode.gscore = 0;
+        startNode.fscore = 0;
+        startNode.opened = true;
+        heap.push(startNode);
+        // nodes.set(startNode.cell.hash);
+        while (!heap.empty()) {
+            const currentNode = heap.pop();
+            currentNode.closed = true;
+            if (currentNode.cell == c1) {
+                return currentNode.backtrace().map(node => node.cell);
+            }
+            currentNode.cell.neighbors.forEach(neighborCell => {
+                var _a;
+                const neighborNode = (_a = nodes.get(neighborCell.hash)) !== null && _a !== void 0 ? _a : new Node(neighborCell);
+                if (!nodes.has(neighborCell.hash)) {
+                    nodes.set(neighborCell.hash, neighborNode);
+                }
+                if (neighborNode.closed || neighborCell.isWall) {
+                    return;
+                }
+                const x1 = currentNode.cell.col;
+                const y1 = currentNode.cell.row;
+                const x2 = neighborCell.col;
+                const y2 = neighborCell.row;
+                // get the distance between current node and the neighbor
+                // and calculate the next g score
+                const cost = (x2 - x1 === 0 || y2 - y1 === 0) ? 1 : Math.SQRT2;
+                const ngscore = currentNode.gscore + cost;
+                if (!neighborNode.opened || ngscore < neighborNode.gscore) {
+                    neighborNode.gscore = ngscore;
+                    neighborNode.fscore = ngscore + this.heuristic(neighborCell, c1);
+                    neighborNode.parent = currentNode;
+                    if (!neighborNode.opened) {
+                        heap.push(neighborNode);
+                        neighborNode.opened = true;
+                    }
+                    else {
+                        heap.updateItem(neighborNode);
+                    }
+                }
+            });
+        }
+        console.log('error');
+    }
+    heuristic(c0, c1) {
+        // Manhattan distance
+        const d1 = Math.abs(c1.col - c0.col);
+        const d2 = Math.abs(c1.row - c0.row);
+        return (d1 + d2);
+        return (c1.col - c0.col) ** 2 + (c1.row - c0.row) ** 2;
+    }
+}
+class Node {
+    constructor(cell) {
+        Object.defineProperty(this, "cell", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "parent", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "opened", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "closed", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "gscore", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "fscore", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this.cell = cell;
+    }
+    backtrace() {
+        const backtrace = [this];
+        let currentNode = this.parent;
+        while (currentNode) {
+            backtrace.push(currentNode);
+            currentNode = currentNode.parent;
+        }
+        return backtrace;
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/game/collision/AbstractCollider.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -837,6 +766,12 @@ class BoxCollider extends _AbstractCollider__WEBPACK_IMPORTED_MODULE_1__.Abstrac
         if (other instanceof BoxCollider) {
             return new _tests_BoxBoxCollisionTest__WEBPACK_IMPORTED_MODULE_0__["default"](this, other);
         }
+    }
+    shiftX(dx) {
+        return new BoxCollider(this.box.shiftX(dx));
+    }
+    shiftY(dy) {
+        return new BoxCollider(this.box.shiftY(dy));
     }
 }
 
@@ -1145,37 +1080,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ MortarBomb)
 /* harmony export */ });
 /* harmony import */ var _pixi_filter_shockwave__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@pixi/filter-shockwave/dist/filter-shockwave.esm.js");
-/* harmony import */ var _Dynamite__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/weapons/Dynamite.ts");
-/* harmony import */ var _RingBomb__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/weapons/RingBomb.ts");
-/* harmony import */ var _Weapon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/weapons/Weapon.ts");
+/* harmony import */ var _RingBomb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/weapons/RingBomb.ts");
+/* harmony import */ var _Weapon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/weapons/Weapon.ts");
 
 
 
-
-class MortarBomb extends _Weapon__WEBPACK_IMPORTED_MODULE_3__["default"] {
+class MortarBomb extends _Weapon__WEBPACK_IMPORTED_MODULE_2__["default"] {
     spawnAt(cell) {
-        const mainBomb = new _RingBomb__WEBPACK_IMPORTED_MODULE_2__["default"](this.game, { radius: 8, propagationDelay: 200 });
-        const wave = new _pixi_filter_shockwave__WEBPACK_IMPORTED_MODULE_0__.ShockwaveFilter([cell.col * 32, cell.row * 32], {
+        const mainBomb = new _RingBomb__WEBPACK_IMPORTED_MODULE_1__["default"](this.game, { radius: 5, propagationDelay: 100, delay: 0 });
+        const wave = new _pixi_filter_shockwave__WEBPACK_IMPORTED_MODULE_0__.ShockwaveFilter([
+            (cell.col + 0.5) * this.game.board.cellSize,
+            (cell.row + 0.5) * this.game.board.cellSize
+        ], {
             radius: 400,
             amplitude: 15,
             brightness: 1.5
         });
         this.game.app.stage.filters = [wave];
         this.game.app.ticker.add(delta => {
-            wave.time += 0.01;
+            wave.time += 0.02;
         });
         mainBomb.spawnAt(cell);
         const nonWallCells = this.game.board.cellsTree.getNonWallCells();
         const maxLength = nonWallCells.length - 1;
-        setTimeout(() => {
-            for (let i = 0; i < 4; i++) {
-                const index = Math.min(Math.round(Math.random() * maxLength), maxLength);
-                const cell = nonWallCells[index];
-                console.log(index);
-                new _Dynamite__WEBPACK_IMPORTED_MODULE_1__["default"](this.game).spawnAt(cell);
-                // new RingBomb(this.game, { radius: 2, delay: 0 }).spawnAt(cell);
-            }
-        }, 1000);
+        // setTimeout(() => {
+        //     for (let i = 0; i < 4; i++) {
+        //         const index = Math.min(Math.round(Math.random() * maxLength), maxLength);
+        //         const cell = nonWallCells[index];
+        //         console.log(index);
+        //         new Dynamite(this.game).spawnAt(cell);
+        //         // new RingBomb(this.game, { radius: 2, delay: 0 }).spawnAt(cell);
+        //     }
+        // }, 1000);
     }
 }
 
@@ -1297,7 +1233,7 @@ module.exports = JSON.parse('{"frames":{"explosion_02.png":{"frame":{"x":0,"y":0
 /***/ "./src/game/assets/levels/level2.json":
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"blocks":[{"coords":"1,1:10,9","type":"wall"},{"coords":"2,2:9,8","type":"grass"},{"coords":"7,2:7,7","type":"wall"},{"coords":"1,4:3,4","type":"wall"},{"coords":"4,6:6,6","type":"wall"}]}');
+module.exports = JSON.parse('{"blocks":[{"coords":"1,1:20,19","type":"wall"},{"coords":"2,2:19,18","type":"grass"},{"coords":"7,2:7,7","type":"wall"},{"coords":"1,4:3,4","type":"wall"},{"coords":"4,6:6,6","type":"wall"}]}');
 
 /***/ })
 

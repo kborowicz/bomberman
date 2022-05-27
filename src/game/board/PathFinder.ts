@@ -1,9 +1,10 @@
-import { BoardCell } from './board/BoardCell';
+
 import Heap from 'heap';
+import { BoardCell } from './BoardCell';
 
-export default class AStar {
+export default class PathFinder {
 
-    public static run(c0: BoardCell, c1: BoardCell): BoardCell[] {
+    public run(c0: BoardCell, c1: BoardCell): BoardCell[] {
         const heap = new Heap<Node>((a, b) => a.fscore - b.fscore);
         const nodes = new Map<string, Node>();
 
@@ -63,7 +64,7 @@ export default class AStar {
         console.log('error');
     }
 
-    private static heuristic(c0: BoardCell, c1: BoardCell) {
+    private heuristic(c0: BoardCell, c1: BoardCell) {
         // Manhattan distance
         const d1 = Math.abs(c1.col - c0.col);
         const d2 = Math.abs(c1.row - c0.row);

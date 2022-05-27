@@ -3,6 +3,7 @@ import { HasCollider } from '../collision/HasCollider';
 import { Renderable } from '../Renderable';
 import { BoardCell } from './BoardCell';
 import BoardCellsTree from './BoardCellsTree';
+import PathFinder from './PathFinder';
 
 export interface IBoardProps {
     cellSize?: number
@@ -11,6 +12,8 @@ export interface IBoardProps {
 export default class Board implements Renderable, HasCollider {
 
     private readonly cellsContainer: Container;
+
+    public readonly pathFinder: PathFinder;
     public readonly cellsTree: BoardCellsTree;
     public readonly cellSize: number;
 
@@ -18,6 +21,7 @@ export default class Board implements Renderable, HasCollider {
         const { cellSize = 40 } = props ?? {};
 
         this.cellSize = cellSize;
+        this.pathFinder = new PathFinder();
         this.cellsContainer = new Container();
         this.cellsTree = new BoardCellsTree(
             cell => this.cellsContainer.addChild(cell.renderable),

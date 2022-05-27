@@ -48,7 +48,7 @@ export default class Player implements Renderable, HasCollider {
         });
 
         app.ticker.add(timeDelta => {
-            const speed = 3.5;
+            const speed = 4.5;
             const movementDelta = timeDelta * speed;
 
             let dx = (+this.isDownA * (-1) + +this.isDownD * (+1)) * movementDelta;

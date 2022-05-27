@@ -1,7 +1,7 @@
 import { Collider } from './Collider';
 
-export interface HasCollider {
+export interface HasCollider<C extends Collider = Collider> {
 
-    collider: Collider;
+    collider: C;
 
 }

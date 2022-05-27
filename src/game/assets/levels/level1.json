@@ -1,0 +1,20 @@
+{
+    "blocks": [
+        {
+            "coords": "1,1:20,20",
+            "type": "wall"
+        },
+        {
+            "coords": "2,2:19,19",
+            "type": "grass"
+        },
+        {
+            "coords": "6,2:6,7",
+            "type": "wall"
+        },
+        {
+            "coords": "6,4",
+            "type": "grass"
+        }
+    ]
+}

@@ -2,6 +2,7 @@ import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { AnimatedSprite } from 'pixi.js';
 import { BoardCell } from '../board/BoardCell';
 import BresenhamCircle from '../Bresenham';
+import Grass from '../entity/blocks/Grass';
 import GameContext from '../GameContext';
 import Resources from '../Resources';
 import Weapon from './Weapon';
@@ -23,31 +24,41 @@ export default class RingBomb extends Weapon {
 
         this.radius = props?.radius ?? 5;
         this.delay = props?.delay ?? 1000;
-        this.propagationDelay = props?.propagationDelay ?? 300;
+        this.propagationDelay = props?.propagationDelay ?? 200;
     }
 
     public spawnAt(cell: BoardCell): void {
         setTimeout(() => {
 
             const wave = new ShockwaveFilter([
-                (cell.col + 0.5) * this.context.board.cellSize, 
+                (cell.col + 0.5) * this.context.board.cellSize,
                 (cell.row + 0.5) * this.context.board.cellSize
             ], {
                 radius: 400,
                 amplitude: 15,
                 brightness: 1.5
             });
-    
+
             this.context.app.stage.filters = [wave];
 
             this.context.ticker.add(delta => {
-                wave.time += 0.02;
+                wave.time += 0.01;
             });
 
             for (let i = 0; i < this.radius; i++) {
                 setTimeout(() => {
                     const ring = BresenhamCircle.getOutline(cell.col, cell.row, i + 1);
                     ring.forEach(([col, row]) => {
+                        const cell = this.context.board.getCellAt(col, row);
+
+                        if (cell.isWall && !cell.isDestroyable) {
+                            return;
+                        }
+
+                        if (cell.isDestroyable) {
+                            cell.setAsDefault();
+                        }
+
                         const sprite = this.getExplosionSprite(col, row, this.context.board.cellSize);
                         this.context.app.stage.addChild(sprite);
                     });

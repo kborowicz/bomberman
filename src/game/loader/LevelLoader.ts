@@ -1,33 +1,31 @@
-import Board from '../board/Board';
-import { BoardCell } from '../board/BoardCell';
+import BlockFactory from '../entity/blocks/BlockFactory';
+import GameContext from '../GameContext';
 
 export default class LevelLoader {
 
-    public static load(level: ILevelDefinition) {
-        const blocks = level.blocks.map(b => this.parseBlock(b));
-        const board = new Board();
-
-        blocks.forEach(block => {
+    public static load(level: ILevelDefinition, context: GameContext) {
+        const board = context.board;
+        const blocksMap = new Map<string, string>();
+        
+        level.blocks.forEach(b => {
+            const block = this.parseBlock(b);
+            
             for (let col = block.x0; col <= block.x1; col++) {
                 for (let row = block.y0; row <= block.y1; row++) {
-                    const cell = board.addCell(col, row);
-
-                    switch (block.type) {
-                        case 'grass': {
-                            cell.setAsGrass();
-                            break;
-                        }
-                        case 'wall': {
-                            cell.setAsWall();
-                            break;
-                        }
-                    }
+                    const key = col + '#' + row;
+                    blocksMap.set(key, block.type);
                 }
-
             }
         });
 
-        return board;
+        [...blocksMap.entries()].forEach(([key, type]) => {
+            const keySplit = key.split('#');
+            const col = +keySplit[0];
+            const row = +keySplit[1];
+            const blockType = BlockFactory.getBlock(type, context);
+
+            board.addCell(col, row, blockType);
+        });
     }
 
     private static parseBlock(blockDef: IBlockDefinition) {
@@ -56,5 +54,5 @@ export interface ILevelDefinition {
 
 export interface IBlockDefinition {
     coords: string;
-    type: 'grass' | 'wall';
+    type: 'grass' | 'wall' | 'bricks';
 }

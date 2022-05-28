@@ -4,6 +4,8 @@ import Actor from '../Actor';
 
 export default class Movement {
 
+    private static readonly epsilon = 0.001;
+
     public readonly actor: Actor;
     public readonly dest: BoardCell;
 
@@ -33,8 +35,6 @@ export default class Movement {
             return null;
         }
 
-        shortestPath.cells.forEach(p => p.setAsWood());
-
         let movement: IMovementData = this.getMovementData(
             this.actor.nearestCell.bbox,
             pathPoints.shift().bbox
@@ -51,37 +51,27 @@ export default class Movement {
             let dx: number;
             let dy: number;
 
-            if (this.equals(cx, x1)) {
+            dx = dt * this.actor.speed * cosa;
+            dy = dt * this.actor.speed * sina;
+
+            if (Math.abs(dx) > Math.abs(x1 - cx)) {
+                dx = Math.abs(x1 - cx) * dirx;
+            }
+
+            if (Math.abs(dy) > Math.abs(y1 - cy)) {
+                dy = Math.abs(y1 - cy) * diry;
+            }
+
+            if (Math.abs(dx) <= Movement.epsilon) {
                 dx = 0;
-            } else {
-                dx = dt * this.actor.speed * cosa;
-
-                if (cx + dx > x1) {
-                    dx = x1 - cx;
-                }
-
-                // if (cx * dirx + dx > x1 * dirx) {
-                //     dx = x1 - cx;
-                // }
             }
 
-            if (this.equals(cy, y1)) {
+            if (Math.abs(dy) <= Movement.epsilon) {
                 dy = 0;
-            } else {
-                dy = dt * this.actor.speed * sina;
-
-                if (cy + dy > y1) {
-                    dy = y1 - cy;
-                }
-
-                // if (cy * diry + dy > y1 * diry) {
-                //     dy = y1 - cy;
-                // }
             }
 
-            console.log(dx, dy);
-
-            if (this.equals(dx, 0) && this.equals(dy, 0)) {
+            if (dx == 0 && dy == 0) {
+                this.actor.nearestCell.alignObject(this.actor.renderable);
                 const nextCell = pathPoints.shift();
 
                 if (nextCell) {
@@ -125,15 +115,11 @@ export default class Movement {
             y0: src.cy,
             x1: dst.cx,
             y1: dst.cy,
-            cosa: Math.round(Math.cos(a) * 10000) / 10000,
-            sina: Math.round(Math.sin(a) * 10000) / 10000,
+            cosa: Math.round(Math.cos(a)),
+            sina: Math.round(Math.sin(a)),
             dirx: Math.sign(dx),
             diry: Math.sign(dy)
         };
-    }
-
-    private equals(a: number, b: number, eps = 0.001) {
-        return Math.abs(a - b) <= eps;
     }
 
 }

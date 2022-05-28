@@ -1,5 +1,9 @@
-import { BoardCell } from '../../board/BoardCell';
+import Entity from '../Entity';
 
-export default class Block extends BoardCell {
+export default abstract class Block extends Entity {
+
+    public abstract get isWall(): boolean;
+
+    public abstract get isDestroyable(): boolean;
 
 }

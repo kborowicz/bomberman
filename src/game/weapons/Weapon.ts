@@ -1,4 +1,5 @@
 import { BoardCell } from '../board/BoardCell';
+import Actor from '../entity/actors/Actor';
 import GameContext from '../GameContext';
 
 export default abstract class Weapon {
@@ -9,7 +10,6 @@ export default abstract class Weapon {
         this.context = context;
     }
 
-    // todo przekazanie powerup'ów
-    public abstract spawnAt(cell: BoardCell): void;
+    public abstract spawnAt(target: BoardCell, owner: Actor): void;
 
 }

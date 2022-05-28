@@ -2,12 +2,12 @@ import Resources from '@/game/Resources';
 import { Container, Sprite } from 'pixi.js';
 import Block from './Block';
 
-export default class Wall extends Block {
+export default class Grass extends Block {
 
-    private sprite = Sprite.from(Resources.WALL_TEXTURE);
+    private sprite = Sprite.from(Resources.GRASS_TEXTURE);
 
     public get isWall(): boolean {
-        return true;
+        return false;
     }
 
     public get isDestroyable(): boolean {
@@ -17,5 +17,4 @@ export default class Wall extends Block {
     public get renderable(): Container {
         return this.sprite;
     }
-
 }

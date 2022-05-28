@@ -3,7 +3,7 @@ import explosionAtlasData from './assets/explosion/explosion.json';
 import explosionAtlas from './assets/explosion/explosion.png';
 import grassImg from './assets/grass.png';
 import wallImg from './assets/wall.png';
-import woodImg from './assets/player.png';
+import woodImg from './assets/dynamite.png';
 import stoneImg from './assets/stone.png';
 import brickImg from './assets/bricks.png';
 import { loadSpritesheet, loadTexture } from './loader/AssetsLoader';

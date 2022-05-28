@@ -13,6 +13,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/game/assets/dynamite.png":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "dynamite.png");
+
+/***/ }),
+
 /***/ "./src/game/assets/explosion/explosion.png":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -32,17 +43,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "grass.png");
-
-/***/ }),
-
-/***/ "./src/game/assets/player.png":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "player.png");
 
 /***/ }),
 
@@ -80,44 +80,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/game/Bresenham.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ BresenhamCircle)
-/* harmony export */ });
-class BresenhamCircle {
-    static getOutline(cx, cy, r) {
-        let x = 0;
-        let y = r;
-        let d = 3 - 2 * r;
-        const points = [];
-        while (x <= y) {
-            if (d < 0) {
-                d += 4 * x + 2;
-            }
-            else {
-                y -= 1;
-                d += 4 * (x - y) + 2;
-            }
-            points.push([cx + x, cy + y]);
-            points.push([cx - x, cy + y]);
-            points.push([cx + x, cy - y]);
-            points.push([cx - x, cy - y]);
-            points.push([cx + y, cy + x]);
-            points.push([cx - y, cy + x]);
-            points.push([cx + y, cy - x]);
-            points.push([cx - y, cy - x]);
-            x += 1;
-        }
-        return points;
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/game/Game.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -125,15 +87,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Game)
 /* harmony export */ });
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
+/* harmony import */ var _assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/assets/levels/level2.json");
 /* harmony import */ var _entity_actors_enemies_BatEnemy__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/entity/actors/enemies/BatEnemy.ts");
-/* harmony import */ var _assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/assets/levels/level2.json");
-/* harmony import */ var _GameContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/GameContext.ts");
-/* harmony import */ var _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/loader/LevelLoader.ts");
-/* harmony import */ var _Resources__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/game/Resources.ts");
-/* harmony import */ var _weapons_RingBomb__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/game/weapons/RingBomb.ts");
-
-
+/* harmony import */ var _GameContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/GameContext.ts");
+/* harmony import */ var _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/loader/LevelLoader.ts");
+/* harmony import */ var _Resources__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/Resources.ts");
 
 
 
@@ -153,39 +111,24 @@ class Game {
         return this._context;
     }
     async run() {
-        await _Resources__WEBPACK_IMPORTED_MODULE_5__["default"].initialize();
-        this.createContext();
-        const { app, board, player } = this.context;
-        player.setPosition(board.getCellAt(2, 2));
-        const bat1 = new _entity_actors_enemies_BatEnemy__WEBPACK_IMPORTED_MODULE_1__["default"](this.context);
-        bat1.speed = 1;
-        bat1.setPosition(8, 8);
-        bat1.goTo(14, 14);
-        const bat2 = new _entity_actors_enemies_BatEnemy__WEBPACK_IMPORTED_MODULE_1__["default"](this.context);
-        bat2.setPosition(board.getCellAt(17, 17));
-        app.stage.addChild(board.renderable);
-        app.stage.addChild(player.renderable);
-        app.stage.addChild(bat1.renderable);
-        app.stage.addChild(bat2.renderable);
-        const ringBonb = new _weapons_RingBomb__WEBPACK_IMPORTED_MODULE_6__["default"](this.context);
-        ringBonb.spawnAt(board.getCellAt(6, 6));
-        // setTimeout(() => {
-        //     const cells = board.cellsTree.getNonWallCells();
-        //     const cell = cells[Math.floor(Math.random() * cells.length - 1)];
-        //     cell.setAsWood();
-        //     bat1.goTo(cell);
-        //     // bat2.goTo(cell);
-        // }, 1000);
+        await _Resources__WEBPACK_IMPORTED_MODULE_4__["default"].initialize();
+        this._context = new _GameContext__WEBPACK_IMPORTED_MODULE_2__["default"]();
+        _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_3__["default"].load(_assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_0__, this._context);
+        const { app, board } = this._context;
         document.getElementById('root').append(app.view);
         app.screen.width = board.renderable.width;
         app.screen.height = board.renderable.height;
-        app.view.width = board.renderable.width;
-        app.view.height = board.renderable.height;
-    }
-    createContext() {
-        const app = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Application();
-        const board = _loader_LevelLoader__WEBPACK_IMPORTED_MODULE_4__["default"].load(_assets_levels_level2_json__WEBPACK_IMPORTED_MODULE_2__);
-        this._context = new _GameContext__WEBPACK_IMPORTED_MODULE_3__["default"](app, board);
+        app.view.width = app.screen.width;
+        app.view.height = app.screen.height;
+        // const ringBomb = new RingBomb(this.context);
+        // ringBomb.spawnAt(board.getCellAt(7, 7));
+        const p = new _entity_actors_enemies_BatEnemy__WEBPACK_IMPORTED_MODULE_1__["default"](this.context);
+        p.setPosition(13, 13);
+        p.goTo(1, 1);
+        setTimeout(() => {
+            p.goTo(13, 1);
+        }, 2221);
+        this.context.addObject(p);
     }
 }
 
@@ -199,10 +142,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ GameContext)
 /* harmony export */ });
-/* harmony import */ var _entity_actors_Player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/entity/actors/Player.ts");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
+/* harmony import */ var _board_Board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/board/Board.ts");
+/* harmony import */ var _entity_actors_Player__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/entity/actors/Player.ts");
+
+
 
 class GameContext {
-    constructor(app, board) {
+    constructor() {
         Object.defineProperty(this, "app", {
             enumerable: true,
             configurable: true,
@@ -227,15 +174,31 @@ class GameContext {
             writable: true,
             value: void 0
         });
-        this.app = app;
-        this.board = board;
-        this.player = new _entity_actors_Player__WEBPACK_IMPORTED_MODULE_0__["default"](this);
+        this.app = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Application({
+            backgroundColor: 0x3d3d3d
+        });
+        this.board = new _board_Board__WEBPACK_IMPORTED_MODULE_1__["default"](this);
+        this.player = new _entity_actors_Player__WEBPACK_IMPORTED_MODULE_2__["default"](this);
+        this.actors.push(this.player);
+        this.addObject(this.board);
+        this.addObject(this.player);
     }
     get ticker() {
         return this.app.ticker;
     }
     get cellSize() {
         return this.board.cellSize;
+    }
+    get stage() {
+        return this.app.stage;
+    }
+    addObject(object) {
+        if (object.renderable) {
+            this.app.stage.addChild(object.renderable);
+        }
+        else {
+            this.app.stage.addChild(object);
+        }
     }
 }
 
@@ -253,7 +216,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _assets_explosion_explosion_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/assets/explosion/explosion.png");
 /* harmony import */ var _assets_grass_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/assets/grass.png");
 /* harmony import */ var _assets_wall_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/assets/wall.png");
-/* harmony import */ var _assets_player_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/assets/player.png");
+/* harmony import */ var _assets_dynamite_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/assets/dynamite.png");
 /* harmony import */ var _assets_stone_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/game/assets/stone.png");
 /* harmony import */ var _assets_bricks_png__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/game/assets/bricks.png");
 /* harmony import */ var _loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/game/loader/AssetsLoader.ts");
@@ -269,7 +232,7 @@ class Resources {
     static async initialize() {
         this.GRASS_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_grass_png__WEBPACK_IMPORTED_MODULE_2__["default"]);
         this.WALL_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_wall_png__WEBPACK_IMPORTED_MODULE_3__["default"]);
-        this.WOOD_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_player_png__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        this.WOOD_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_dynamite_png__WEBPACK_IMPORTED_MODULE_4__["default"]);
         this.STONE_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_stone_png__WEBPACK_IMPORTED_MODULE_5__["default"]);
         this.BRICK_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_bricks_png__WEBPACK_IMPORTED_MODULE_6__["default"]);
         this.EXPLOSION_SPRITESHEET = await (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadSpritesheet)(_assets_explosion_explosion_png__WEBPACK_IMPORTED_MODULE_1__["default"], _assets_explosion_explosion_json__WEBPACK_IMPORTED_MODULE_0__);
@@ -295,8 +258,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Board {
-    constructor(props = null) {
+    constructor(context) {
         Object.defineProperty(this, "cellsContainer", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "context", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -318,10 +287,9 @@ class Board {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
+            value: 40
         });
-        const { cellSize = 40 } = props !== null && props !== void 0 ? props : {};
-        this.cellSize = cellSize;
+        this.context = context;
         this.pathFinder = new _PathFinder__WEBPACK_IMPORTED_MODULE_3__["default"]();
         this.cellsContainer = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Container();
         this.cellsTree = new _BoardCellsTree__WEBPACK_IMPORTED_MODULE_2__["default"](cell => this.cellsContainer.addChild(cell.renderable), cell => this.cellsContainer.removeChild(cell.renderable));
@@ -335,8 +303,13 @@ class Board {
     getCellAt(col, row) {
         return this.cellsTree.getCellAt(col, row);
     }
-    addCell(col, row) {
-        const cell = new _BoardCell__WEBPACK_IMPORTED_MODULE_1__.BoardCell(col, row, this.cellSize, this);
+    addCell(col, row, block) {
+        const cell = new _BoardCell__WEBPACK_IMPORTED_MODULE_1__.BoardCell(col, row, block, this);
+        cell.block.renderable.x = col * this.cellSize;
+        cell.block.renderable.y = row * this.cellSize;
+        cell.block.renderable.width = this.cellSize;
+        cell.block.renderable.height = this.cellSize;
+        this.cellsContainer.addChild(cell.block.renderable);
         this.cellsTree.addCell(cell);
         return cell;
     }
@@ -355,31 +328,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BoardCell": () => (/* binding */ BoardCell)
 /* harmony export */ });
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
-/* harmony import */ var _collision_BoundingBox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/collision/BoundingBox.ts");
-/* harmony import */ var _Resources__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/Resources.ts");
-
-
+/* harmony import */ var _entity_blocks_Grass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/entity/blocks/Grass.ts");
 
 class BoardCell {
-    constructor(col, row, size, board) {
-        Object.defineProperty(this, "sprite", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
+    constructor(col, row, block, board) {
         Object.defineProperty(this, "board", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: void 0
-        });
-        Object.defineProperty(this, "_isWall", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
         });
         Object.defineProperty(this, "col", {
             enumerable: true,
@@ -393,7 +350,7 @@ class BoardCell {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "bbox", {
+        Object.defineProperty(this, "_block", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -402,16 +359,7 @@ class BoardCell {
         this.board = board;
         this.col = col;
         this.row = row;
-        const x0 = col * size;
-        const y0 = row * size;
-        const x1 = x0 + size;
-        const y1 = y0 + size;
-        this.sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite(_Resources__WEBPACK_IMPORTED_MODULE_2__["default"].GRASS_TEXTURE);
-        this.bbox = _collision_BoundingBox__WEBPACK_IMPORTED_MODULE_1__["default"].fromCoords(x0, y0, x1, y1);
-        this.sprite.width = size;
-        this.sprite.height = size;
-        this.sprite.x = x0;
-        this.sprite.y = y0;
+        this._block = block;
     }
     get neighbors() {
         return [
@@ -425,25 +373,43 @@ class BoardCell {
             // this.board.getCellAt(this.col + 1, this.row - 1),
         ].filter(cell => !!cell);
     }
-    //TODO get/set block (Block)
+    get renderable() {
+        return this._block.renderable;
+    }
+    get bbox() {
+        return this._block.bbox;
+    }
     get hash() {
         return this.col + '#' + this.row;
     }
-    get renderable() {
-        return this.sprite;
-    }
     get isWall() {
-        return this._isWall;
+        return this._block.isWall;
     }
-    setAsWall(isDestroyable = false) {
-        this._isWall = true;
-        this.sprite.texture = _Resources__WEBPACK_IMPORTED_MODULE_2__["default"].WALL_TEXTURE;
+    get isDestroyable() {
+        return this._block.isDestroyable;
     }
-    setAsGrass() {
-        this.sprite.texture = _Resources__WEBPACK_IMPORTED_MODULE_2__["default"].GRASS_TEXTURE;
+    get block() {
+        return this._block;
     }
-    setAsWood() {
-        this.sprite.texture = _Resources__WEBPACK_IMPORTED_MODULE_2__["default"].WOOD_TEXTURE;
+    set block(value) {
+        if (value === this._block) {
+            return;
+        }
+        if (this._block) {
+            this._block.renderable.destroy();
+        }
+        if (!value) {
+            value = new _entity_blocks_Grass__WEBPACK_IMPORTED_MODULE_0__["default"](this.board.context);
+        }
+        value.renderable.x = this.col * this.board.cellSize;
+        value.renderable.y = this.row * this.board.cellSize;
+        value.renderable.width = this.board.cellSize;
+        value.renderable.height = this.board.cellSize;
+        this._block = value;
+        this.board.context.addObject(this._block);
+    }
+    setAsDefault() {
+        this.block = null;
     }
     alignObject(object) {
         const cellSize = this.board.cellSize;
@@ -503,6 +469,7 @@ class BoardCellsTree {
             if (cell.isWall) {
                 const f1 = bbox.intersectionFactorX(cell.bbox);
                 const f2 = bbox.intersectionFactorY(cell.bbox);
+                console.log(f1, f2);
                 return (f1 > 0.01 && f2 > 0.01);
             }
             else {
@@ -783,10 +750,38 @@ class BoundingBox {
         return true;
     }
     intersectionFactorX(bbox) {
-        return Math.min(Math.abs(bbox.p2.x - this.p1.x), Math.abs(this.p2.x - bbox.p1.x));
+        const r1x1 = this.p1.x;
+        const r1x2 = this.p2.x;
+        const r2x1 = bbox.p1.x;
+        const r2x2 = bbox.p2.x;
+        if (r2x1 >= r1x2 || r1x1 >= r2x2) {
+            return 0;
+        }
+        else {
+            if (r2x1 > r1x2) {
+                return r2x1 - r1x2;
+            }
+            else {
+                return r1x1 - r2x2;
+            }
+        }
     }
     intersectionFactorY(bbox) {
-        return Math.min(Math.abs(bbox.p2.y - this.p1.y), Math.abs(this.p2.y - bbox.p1.y));
+        const r1y1 = this.p1.y;
+        const r1y2 = this.p2.y;
+        const r2y1 = bbox.p1.y;
+        const r2y2 = bbox.p2.y;
+        if (r2y1 >= r1y2 || r1y1 >= r2y2) {
+            return 0;
+        }
+        else {
+            if (r2y1 > r1y2) {
+                return r2y1 - r1y2;
+            }
+            else {
+                return r1y1 - r2y2;
+            }
+        }
     }
     static fromCoords(x0, y0, x1, y1) {
         return new BoundingBox(new _Point__WEBPACK_IMPORTED_MODULE_0__["default"](x0, y0), new _Point__WEBPACK_IMPORTED_MODULE_0__["default"](x1, y1));
@@ -851,24 +846,6 @@ class Entity {
         const { x, y, width, height } = this.renderable;
         return _collision_BoundingBox__WEBPACK_IMPORTED_MODULE_0__["default"].fromDims(x, y, width, height);
     }
-    get nearestCell() {
-        const board = this.context.board;
-        const cellSize = board.cellSize;
-        const { x0: cx, y0: cy } = this.bbox; //TODO jak to ogarnac zeby dzialalo poruszanie
-        return board.getCellAt(Math.round(cx / cellSize), Math.round(cy / cellSize));
-    }
-    setPosition(arg1, arg2) {
-        let cell;
-        if (typeof arg1 === 'number') {
-            cell = this.context.board.getCellAt(arg1, arg2);
-        }
-        else {
-            cell = arg1;
-        }
-        if (!cell.isWall) {
-            cell.alignObject(this.renderable);
-        }
-    }
 }
 
 
@@ -887,6 +864,12 @@ class Actor extends _Entity__WEBPACK_IMPORTED_MODULE_0__["default"] {
     constructor() {
         // TODO eventy:
         super(...arguments);
+        Object.defineProperty(this, "prevCell", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "_speed", {
             enumerable: true,
             configurable: true,
@@ -906,11 +889,33 @@ class Actor extends _Entity__WEBPACK_IMPORTED_MODULE_0__["default"] {
     set speed(value) {
         this._speed = value;
     }
+    get nearestCell() {
+        const board = this.context.board;
+        const cellSize = board.cellSize;
+        const { cx, cy } = this.bbox; //TODO jak to ogarnac zeby dzialalo poruszanie
+        return board.getCellAt(Math.floor(cx / cellSize), Math.floor(cy / cellSize));
+    }
+    setPosition(arg1, arg2) {
+        let cell;
+        if (typeof arg1 === 'number') {
+            cell = this.context.board.getCellAt(arg1, arg2);
+        }
+        else {
+            cell = arg1;
+        }
+        if (!cell.isWall) {
+            cell.alignObject(this.renderable);
+        }
+    }
     move(dx, dy) {
         const board = this.context.board;
         const bbox = this.bbox;
         let newX = this.renderable.x;
         let newY = this.renderable.y;
+        if (this.nearestCell != this.prevCell) {
+            console.log(this.nearestCell);
+            this.prevCell = this.nearestCell;
+        }
         if (dx != 0) {
             const shiftedBbox = bbox.shiftX(dx);
             if (!board.testCollision(shiftedBbox)) {
@@ -993,14 +998,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class BatEnemy extends _Enemy__WEBPACK_IMPORTED_MODULE_2__["default"] {
-    constructor() {
-        super(...arguments);
+    constructor(context) {
+        super(context);
         Object.defineProperty(this, "_sprite", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from(_Resources__WEBPACK_IMPORTED_MODULE_1__["default"].WOOD_TEXTURE)
+            value: void 0
         });
+        this._sprite = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from(_Resources__WEBPACK_IMPORTED_MODULE_1__["default"].WOOD_TEXTURE);
+        this._sprite.width = this.context.cellSize;
+        this._sprite.height = this.context.cellSize;
     }
     get renderable() {
         return this._sprite;
@@ -1106,7 +1114,6 @@ class Movement {
         if (!pathPoints.length) {
             return null;
         }
-        shortestPath.cells.forEach(p => p.setAsWood());
         let movement = this.getMovementData(this.actor.nearestCell.bbox, pathPoints.shift().bbox);
         this.tickerCallback = (dt) => {
             if (this._isPaused) {
@@ -1116,32 +1123,22 @@ class Movement {
             const { x1, y1, dirx, diry, cosa, sina } = movement;
             let dx;
             let dy;
-            if (this.equals(cx, x1)) {
+            dx = dt * this.actor.speed * cosa;
+            dy = dt * this.actor.speed * sina;
+            if (Math.abs(dx) > Math.abs(x1 - cx)) {
+                dx = Math.abs(x1 - cx) * dirx;
+            }
+            if (Math.abs(dy) > Math.abs(y1 - cy)) {
+                dy = Math.abs(y1 - cy) * diry;
+            }
+            if (Math.abs(dx) <= Movement.epsilon) {
                 dx = 0;
             }
-            else {
-                dx = dt * this.actor.speed * cosa;
-                if (cx + dx > x1) {
-                    dx = x1 - cx;
-                }
-                // if (cx * dirx + dx > x1 * dirx) {
-                //     dx = x1 - cx;
-                // }
-            }
-            if (this.equals(cy, y1)) {
+            if (Math.abs(dy) <= Movement.epsilon) {
                 dy = 0;
             }
-            else {
-                dy = dt * this.actor.speed * sina;
-                if (cy + dy > y1) {
-                    dy = y1 - cy;
-                }
-                // if (cy * diry + dy > y1 * diry) {
-                //     dy = y1 - cy;
-                // }
-            }
-            console.log(dx, dy);
-            if (this.equals(dx, 0) && this.equals(dy, 0)) {
+            if (dx == 0 && dy == 0) {
+                this.actor.nearestCell.alignObject(this.actor.renderable);
                 const nextCell = pathPoints.shift();
                 if (nextCell) {
                     movement = this.getMovementData(this.actor.nearestCell.bbox, nextCell.bbox);
@@ -1176,14 +1173,169 @@ class Movement {
             y0: src.cy,
             x1: dst.cx,
             y1: dst.cy,
-            cosa: Math.round(Math.cos(a) * 10000) / 10000,
-            sina: Math.round(Math.sin(a) * 10000) / 10000,
+            cosa: Math.round(Math.cos(a)),
+            sina: Math.round(Math.sin(a)),
             dirx: Math.sign(dx),
             diry: Math.sign(dy)
         };
     }
-    equals(a, b, eps = 0.001) {
-        return Math.abs(a - b) <= eps;
+}
+Object.defineProperty(Movement, "epsilon", {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: 0.001
+});
+
+
+/***/ }),
+
+/***/ "./src/game/entity/blocks/Block.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Block)
+/* harmony export */ });
+/* harmony import */ var _Entity__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/entity/Entity.ts");
+
+class Block extends _Entity__WEBPACK_IMPORTED_MODULE_0__["default"] {
+}
+
+
+/***/ }),
+
+/***/ "./src/game/entity/blocks/BlockFactory.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BlockFactory)
+/* harmony export */ });
+/* harmony import */ var _Bricks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/entity/blocks/Bricks.ts");
+/* harmony import */ var _Grass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/entity/blocks/Grass.ts");
+/* harmony import */ var _Wall__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/entity/blocks/Wall.ts");
+
+
+
+class BlockFactory {
+    static getBlock(type, context) {
+        switch (type) {
+            case 'grass': return new _Grass__WEBPACK_IMPORTED_MODULE_1__["default"](context);
+            case 'wall': return new _Wall__WEBPACK_IMPORTED_MODULE_2__["default"](context);
+            case 'bricks': return new _Bricks__WEBPACK_IMPORTED_MODULE_0__["default"](context);
+        }
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/game/entity/blocks/Bricks.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Bricks)
+/* harmony export */ });
+/* harmony import */ var _game_Resources__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/Resources.ts");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
+/* harmony import */ var _Block__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/entity/blocks/Block.ts");
+
+
+
+class Bricks extends _Block__WEBPACK_IMPORTED_MODULE_2__["default"] {
+    constructor() {
+        super(...arguments);
+        Object.defineProperty(this, "sprite", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: pixi_js__WEBPACK_IMPORTED_MODULE_1__.Sprite.from(_game_Resources__WEBPACK_IMPORTED_MODULE_0__["default"].BRICK_TEXTURE)
+        });
+    }
+    get isWall() {
+        return true;
+    }
+    get isDestroyable() {
+        return true;
+    }
+    get renderable() {
+        return this.sprite;
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/game/entity/blocks/Grass.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Grass)
+/* harmony export */ });
+/* harmony import */ var _game_Resources__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/Resources.ts");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
+/* harmony import */ var _Block__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/entity/blocks/Block.ts");
+
+
+
+class Grass extends _Block__WEBPACK_IMPORTED_MODULE_2__["default"] {
+    constructor() {
+        super(...arguments);
+        Object.defineProperty(this, "sprite", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: pixi_js__WEBPACK_IMPORTED_MODULE_1__.Sprite.from(_game_Resources__WEBPACK_IMPORTED_MODULE_0__["default"].GRASS_TEXTURE)
+        });
+    }
+    get isWall() {
+        return false;
+    }
+    get isDestroyable() {
+        return false;
+    }
+    get renderable() {
+        return this.sprite;
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/game/entity/blocks/Wall.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Wall)
+/* harmony export */ });
+/* harmony import */ var _game_Resources__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/Resources.ts");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
+/* harmony import */ var _Block__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/entity/blocks/Block.ts");
+
+
+
+class Wall extends _Block__WEBPACK_IMPORTED_MODULE_2__["default"] {
+    constructor() {
+        super(...arguments);
+        Object.defineProperty(this, "sprite", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: pixi_js__WEBPACK_IMPORTED_MODULE_1__.Sprite.from(_game_Resources__WEBPACK_IMPORTED_MODULE_0__["default"].WALL_TEXTURE)
+        });
+    }
+    get isWall() {
+        return true;
+    }
+    get isDestroyable() {
+        return false;
+    }
+    get renderable() {
+        return this.sprite;
     }
 }
 
@@ -1224,30 +1376,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ LevelLoader)
 /* harmony export */ });
-/* harmony import */ var _board_Board__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/board/Board.ts");
+/* harmony import */ var _entity_blocks_BlockFactory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/game/entity/blocks/BlockFactory.ts");
 
 class LevelLoader {
-    static load(level) {
-        const blocks = level.blocks.map(b => this.parseBlock(b));
-        const board = new _board_Board__WEBPACK_IMPORTED_MODULE_0__["default"]();
-        blocks.forEach(block => {
+    static load(level, context) {
+        const board = context.board;
+        const blocksMap = new Map();
+        level.blocks.forEach(b => {
+            const block = this.parseBlock(b);
             for (let col = block.x0; col <= block.x1; col++) {
                 for (let row = block.y0; row <= block.y1; row++) {
-                    const cell = board.addCell(col, row);
-                    switch (block.type) {
-                        case 'grass': {
-                            cell.setAsGrass();
-                            break;
-                        }
-                        case 'wall': {
-                            cell.setAsWall();
-                            break;
-                        }
-                    }
+                    const key = col + '#' + row;
+                    blocksMap.set(key, block.type);
                 }
             }
         });
-        return board;
+        [...blocksMap.entries()].forEach(([key, type]) => {
+            const keySplit = key.split('#');
+            const col = +keySplit[0];
+            const row = +keySplit[1];
+            const blockType = _entity_blocks_BlockFactory__WEBPACK_IMPORTED_MODULE_0__["default"].getBlock(type, context);
+            board.addCell(col, row, blockType);
+        });
     }
     static parseBlock(blockDef) {
         const coordsSplit = blockDef.coords.split(':');
@@ -1262,112 +1412,6 @@ class LevelLoader {
             y1 = Math.max(Math.round(+c1[1]), 1) - 1;
         }
         return { x0, y0, x1, y1, type: blockDef.type };
-    }
-}
-
-
-/***/ }),
-
-/***/ "./src/game/weapons/RingBomb.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ RingBomb)
-/* harmony export */ });
-/* harmony import */ var _pixi_filter_shockwave__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@pixi/filter-shockwave/dist/filter-shockwave.esm.js");
-/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/pixi.js/dist/esm/pixi.js");
-/* harmony import */ var _Bresenham__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/Bresenham.ts");
-/* harmony import */ var _Resources__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/Resources.ts");
-/* harmony import */ var _Weapon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/weapons/Weapon.ts");
-
-
-
-
-
-class RingBomb extends _Weapon__WEBPACK_IMPORTED_MODULE_4__["default"] {
-    constructor(game, props) {
-        var _a, _b, _c;
-        super(game);
-        Object.defineProperty(this, "radius", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "delay", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "propagationDelay", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        this.radius = (_a = props === null || props === void 0 ? void 0 : props.radius) !== null && _a !== void 0 ? _a : 5;
-        this.delay = (_b = props === null || props === void 0 ? void 0 : props.delay) !== null && _b !== void 0 ? _b : 1000;
-        this.propagationDelay = (_c = props === null || props === void 0 ? void 0 : props.propagationDelay) !== null && _c !== void 0 ? _c : 300;
-    }
-    spawnAt(cell) {
-        setTimeout(() => {
-            const wave = new _pixi_filter_shockwave__WEBPACK_IMPORTED_MODULE_0__.ShockwaveFilter([
-                (cell.col + 0.5) * this.context.board.cellSize,
-                (cell.row + 0.5) * this.context.board.cellSize
-            ], {
-                radius: 400,
-                amplitude: 15,
-                brightness: 1.5
-            });
-            this.context.app.stage.filters = [wave];
-            this.context.ticker.add(delta => {
-                wave.time += 0.02;
-            });
-            for (let i = 0; i < this.radius; i++) {
-                setTimeout(() => {
-                    const ring = _Bresenham__WEBPACK_IMPORTED_MODULE_2__["default"].getOutline(cell.col, cell.row, i + 1);
-                    ring.forEach(([col, row]) => {
-                        const sprite = this.getExplosionSprite(col, row, this.context.board.cellSize);
-                        this.context.app.stage.addChild(sprite);
-                    });
-                }, i * this.propagationDelay);
-            }
-        }, this.delay);
-    }
-    getExplosionSprite(col, row, cellSize) {
-        const sprite = new pixi_js__WEBPACK_IMPORTED_MODULE_1__.AnimatedSprite(_Resources__WEBPACK_IMPORTED_MODULE_3__["default"].EXPLOSION_SPRITESHEET.animations.explosion);
-        sprite.width = cellSize;
-        sprite.height = cellSize;
-        sprite.x = col * cellSize;
-        sprite.y = row * cellSize;
-        sprite.animationSpeed = 0.3;
-        sprite.loop = false;
-        sprite.play();
-        return sprite;
-    }
-}
-
-
-/***/ }),
-
-/***/ "./src/game/weapons/Weapon.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Weapon)
-/* harmony export */ });
-class Weapon {
-    constructor(context) {
-        Object.defineProperty(this, "context", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        this.context = context;
     }
 }
 
@@ -1397,7 +1441,7 @@ module.exports = JSON.parse('{"frames":{"explosion_02.png":{"frame":{"x":0,"y":0
 /***/ "./src/game/assets/levels/level2.json":
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"blocks":[{"coords":"1,1:20,20","type":"wall"},{"coords":"2,2:19,19","type":"grass"},{"coords":"7,2:7,7","type":"wall"},{"coords":"1,4:3,4","type":"wall"},{"coords":"4,6:6,6","type":"wall"}]}');
+module.exports = JSON.parse('{"blocks":[{"coords":"1,1:15,15","type":"wall"},{"coords":"2,2:14,14","type":"grass"},{"coords":"3,4:13,4","type":"wall"},{"coords":"3,12:13,12","type":"wall"},{"coords":"4,3:4,13","type":"wall"},{"coords":"12,3:12,13","type":"wall"},{"coords":"7,4:9,4","type":"grass"},{"coords":"4,7:4,9","type":"grass"},{"coords":"7,12:9,12","type":"grass"},{"coords":"12,7:12,9","type":"grass"},{"coords":"2,8","type":"wall"},{"coords":"8,2","type":"wall"},{"coords":"14,8","type":"wall"},{"coords":"8,14","type":"wall"},{"coords":"6,6:10,10","type":"wall"},{"coords":"6,8:10,8","type":"bricks"},{"coords":"8,6:8,10","type":"bricks"},{"coords":"6,6","type":"grass"},{"coords":"10,10","type":"grass"},{"coords":"6,10","type":"grass"},{"coords":"10,6","type":"grass"}]}');
 
 /***/ })
 
@@ -1590,7 +1634,7 @@ module.exports = JSON.parse('{"blocks":[{"coords":"1,1:20,20","type":"wall"},{"c
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_pixi_filter-shockwave_dist_filter-shockwave_esm_js-node_modules_heap_ind-bba7ca"], () => (__webpack_require__("./src/index.ts")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_heap_index_js-node_modules_pixi_js_dist_esm_pixi_js-node_modules_rbush_r-331d17"], () => (__webpack_require__("./src/index.ts")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

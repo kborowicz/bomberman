@@ -27,6 +27,8 @@ export default class BoardCellsTree implements CollisionTest {
                 const f1 = bbox.intersectionFactorX(cell.bbox);
                 const f2 = bbox.intersectionFactorY(cell.bbox);
 
+                console.log(f1, f2)
+
                 return (f1 > 0.01 && f2 > 0.01);
             } else {
                 return false;

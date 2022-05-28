@@ -1,7 +1,8 @@
-import { Application } from 'pixi.js';
+import { Application, DisplayObject } from 'pixi.js';
+import Board from './board/Board';
 import Actor from './entity/actors/Actor';
 import Player from './entity/actors/Player';
-import Board from './board/Board';
+import { Renderable } from './Renderable';
 
 export default class GameContext {
 
@@ -11,10 +12,17 @@ export default class GameContext {
     public readonly actors: Actor[] = [];
     public readonly player: Player;
 
-    public constructor(app: Application, board: Board) {
-        this.app = app;
-        this.board = board;
+    public constructor() {
+        this.app = new Application({
+            backgroundColor: 0x3d3d3d
+        });
+
+        this.board = new Board(this);
         this.player = new Player(this);
+        this.actors.push(this.player);
+
+        this.addObject(this.board);
+        this.addObject(this.player);
     }
 
     public get ticker() {
@@ -23,6 +31,18 @@ export default class GameContext {
 
     public get cellSize() {
         return this.board.cellSize;
+    }
+
+    public get stage() {
+        return this.app.stage;
+    }
+
+    public addObject(object: Renderable | DisplayObject) {
+        if ((object as Renderable).renderable) {
+            this.app.stage.addChild(object.renderable as DisplayObject);
+        } else {
+            this.app.stage.addChild(object as DisplayObject);
+        }
     }
 
 }

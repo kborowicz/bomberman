@@ -1,24 +1,88 @@
 {
     "blocks": [
         {
-            "coords": "1,1:20,20",
+            "coords": "1,1:15,15",
             "type": "wall"
         },
         {
-            "coords": "2,2:19,19",
+            "coords": "2,2:14,14",
             "type": "grass"
         },
         {
-            "coords": "7,2:7,7",
+            "coords": "3,4:13,4",
             "type": "wall"
         },
         {
-            "coords": "1,4:3,4",
+            "coords": "3,12:13,12",
             "type": "wall"
         },
         {
-            "coords": "4,6:6,6",
+            "coords": "4,3:4,13",
             "type": "wall"
+        },
+        {
+            "coords": "12,3:12,13",
+            "type": "wall"
+        },
+        {
+            "coords": "7,4:9,4",
+            "type": "grass"
+        },
+        {
+            "coords": "4,7:4,9",
+            "type": "grass"
+        },
+        {
+            "coords": "7,12:9,12",
+            "type": "grass"
+        },
+        {
+            "coords": "12,7:12,9",
+            "type": "grass"
+        },
+        {
+            "coords": "2,8",
+            "type": "wall"
+        },
+        {
+            "coords": "8,2",
+            "type": "wall"
+        },
+        {
+            "coords": "14,8",
+            "type": "wall"
+        },
+        {
+            "coords": "8,14",
+            "type": "wall"
+        },
+        {
+            "coords": "6,6:10,10",
+            "type": "wall"
+        },
+        {
+            "coords": "6,8:10,8",
+            "type": "bricks"
+        },
+        {
+            "coords": "8,6:8,10",
+            "type": "bricks"
+        },
+        {
+            "coords": "6,6",
+            "type": "grass"
+        },
+        {
+            "coords": "10,10",
+            "type": "grass"
+        },
+        {
+            "coords": "6,10",
+            "type": "grass"
+        },
+        {
+            "coords": "10,6",
+            "type": "grass"
         }
     ]
 }

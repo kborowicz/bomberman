@@ -4,7 +4,7 @@ import { BoardCell } from './BoardCell';
 
 export default class PathFinder {
 
-    public find(c0: BoardCell, c1: BoardCell): BoardPath {
+    public find(c0: BoardCell, c1: BoardCell): Path {
         const heap = new Heap<Node>((a, b) => a.fscore - b.fscore);
         const nodes = new Map<string, Node>();
 
@@ -22,7 +22,7 @@ export default class PathFinder {
 
             if (currentNode.cell == c1) {
                 const backtrace = currentNode.backtrace();
-                return new BoardPath(backtrace.map(node => node.cell));
+                return new Path(backtrace.map(node => node.cell));
             }
 
             currentNode.cell.neighbors.forEach(neighborCell => {
@@ -77,7 +77,7 @@ export default class PathFinder {
 }
 
 class Node {
-
+    
     public readonly cell: BoardCell;
 
     public parent: Node;
@@ -106,7 +106,7 @@ class Node {
 
 }
 
-export class BoardPath {
+export class Path {
 
     public readonly cells: readonly BoardCell[];
     public readonly points: readonly BoardCell[];

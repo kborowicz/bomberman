@@ -1,7 +1,8 @@
+import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { AnimatedSprite } from 'pixi.js';
 import { BoardCell } from '../board/BoardCell';
 import BresenhamCircle from '../Bresenham';
-import Game from '../Game';
+import GameContext from '../GameContext';
 import Resources from '../Resources';
 import Weapon from './Weapon';
 
@@ -17,7 +18,7 @@ export default class RingBomb extends Weapon {
     private readonly delay: number;
     private readonly propagationDelay: number;
 
-    public constructor(game: Game, props?: IRingBombProps) {
+    public constructor(game: GameContext, props?: IRingBombProps) {
         super(game);
 
         this.radius = props?.radius ?? 5;
@@ -28,12 +29,27 @@ export default class RingBomb extends Weapon {
     public spawnAt(cell: BoardCell): void {
         setTimeout(() => {
 
+            const wave = new ShockwaveFilter([
+                (cell.col + 0.5) * this.context.board.cellSize, 
+                (cell.row + 0.5) * this.context.board.cellSize
+            ], {
+                radius: 400,
+                amplitude: 15,
+                brightness: 1.5
+            });
+    
+            this.context.app.stage.filters = [wave];
+
+            this.context.ticker.add(delta => {
+                wave.time += 0.02;
+            });
+
             for (let i = 0; i < this.radius; i++) {
                 setTimeout(() => {
                     const ring = BresenhamCircle.getOutline(cell.col, cell.row, i + 1);
                     ring.forEach(([col, row]) => {
-                        const sprite = this.getExplosionSprite(col, row, this.game.board.cellSize);
-                        this.game.app.stage.addChild(sprite);
+                        const sprite = this.getExplosionSprite(col, row, this.context.board.cellSize);
+                        this.context.app.stage.addChild(sprite);
                     });
                 }, i * this.propagationDelay);
             }

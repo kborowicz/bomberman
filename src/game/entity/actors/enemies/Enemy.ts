@@ -1,13 +1,11 @@
-import { Sprite } from 'pixi.js';
-import { BoardCell } from '../board/BoardCell';
-import Actor from './Actor';
+import { Container, Sprite } from 'pixi.js';
+import { BoardCell } from '../../../board/BoardCell';
+import Actor from '../Actor';
 import Movement from './Movement';
 
-export default abstract class ActorAI<
-    S extends Sprite = Sprite
-> extends Actor<S> {
-
-    protected abstract get sprite(): S;
+export default abstract class Enemy<
+    T extends Container = Container
+> extends Actor<T> {
 
     protected currentMovement: Movement;
 
@@ -16,6 +14,8 @@ export default abstract class ActorAI<
     public goTo(arg1: number | BoardCell, arg2?: number): Movement {
         if (this.currentMovement) {
             this.currentMovement.cancel();
+
+            //TODO gładka zmiana ruchów
         }
 
         let newMovement: Movement;

@@ -1,13 +1,12 @@
-import Board from '../board/Board';
 import { BoardCell } from '../board/BoardCell';
-import Game from '../Game';
+import GameContext from '../GameContext';
 
 export default abstract class Weapon {
 
-    protected readonly game: Game;
+    protected readonly context: GameContext;
 
-    public constructor(game: Game) {
-        this.game = game;
+    public constructor(context: GameContext) {
+        this.context = context;
     }
 
     // todo przekazanie powerup'ów

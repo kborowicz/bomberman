@@ -1,6 +1,6 @@
-import { BoardCell } from '../board/BoardCell';
-import BoundingBox from '../collision/BoundingBox';
-import Actor from './Actor';
+import { BoardCell } from '../../../board/BoardCell';
+import BoundingBox from '../../../collision/BoundingBox';
+import Actor from '../Actor';
 
 export default class Movement {
 
@@ -33,6 +33,8 @@ export default class Movement {
             return null;
         }
 
+        shortestPath.cells.forEach(p => p.setAsWood());
+
         let movement: IMovementData = this.getMovementData(
             this.actor.nearestCell.bbox,
             pathPoints.shift().bbox
@@ -54,9 +56,13 @@ export default class Movement {
             } else {
                 dx = dt * this.actor.speed * cosa;
 
-                if (cx * dirx + dx * dirx >= x1 * dirx) {
+                if (cx + dx > x1) {
                     dx = x1 - cx;
                 }
+
+                // if (cx * dirx + dx > x1 * dirx) {
+                //     dx = x1 - cx;
+                // }
             }
 
             if (this.equals(cy, y1)) {
@@ -64,10 +70,16 @@ export default class Movement {
             } else {
                 dy = dt * this.actor.speed * sina;
 
-                if (cy * diry + dy * diry >= y1 * diry) {
+                if (cy + dy > y1) {
                     dy = y1 - cy;
                 }
+
+                // if (cy * diry + dy > y1 * diry) {
+                //     dy = y1 - cy;
+                // }
             }
+
+            console.log(dx, dy);
 
             if (this.equals(dx, 0) && this.equals(dy, 0)) {
                 const nextCell = pathPoints.shift();
@@ -113,8 +125,8 @@ export default class Movement {
             y0: src.cy,
             x1: dst.cx,
             y1: dst.cy,
-            cosa: Math.cos(a),
-            sina: Math.sin(a),
+            cosa: Math.round(Math.cos(a) * 10000) / 10000,
+            sina: Math.round(Math.sin(a) * 10000) / 10000,
             dirx: Math.sign(dx),
             diry: Math.sign(dy)
         };

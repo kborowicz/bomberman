@@ -1,5 +1,5 @@
 import { DisplayObject } from 'pixi.js';
 
-export interface Renderable {
-    renderable: DisplayObject;
+export interface Renderable <T extends DisplayObject = DisplayObject> {
+    renderable: T;
 }

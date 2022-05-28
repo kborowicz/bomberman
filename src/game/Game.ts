@@ -1,9 +1,11 @@
 import { Application } from 'pixi.js';
-import BatEnemy from './actors/BatEnemy';
+import BatEnemy from './entity/actors/enemies/BatEnemy';
 import level2 from './assets/levels/level2.json';
 import GameContext from './GameContext';
 import LevelLoader, { ILevelDefinition } from './loader/LevelLoader';
 import Resources from './Resources';
+import Player from './entity/actors/Player';
+import RingBomb from './weapons/RingBomb';
 
 export default class Game {
 
@@ -26,8 +28,9 @@ export default class Game {
         player.setPosition(board.getCellAt(2, 2));
 
         const bat1 = new BatEnemy(this.context);
-        bat1.speed = 5
-        bat1.setPosition(board.getCellAt(17, 2));
+        bat1.speed = 1;
+        bat1.setPosition(8, 8);
+        bat1.goTo(14, 14);
 
         const bat2 = new BatEnemy(this.context);
         bat2.setPosition(board.getCellAt(17, 17));
@@ -37,13 +40,16 @@ export default class Game {
         app.stage.addChild(bat1.renderable);
         app.stage.addChild(bat2.renderable);
 
-        setTimeout(() => {
-            const cells = board.cellsTree.getNonWallCells();
-            const cell = cells[Math.floor(Math.random() * cells.length - 1)];
-            cell.setAsWood();
-            bat1.goTo(cell);
-            bat2.goTo(cell);
-        }, 1000);
+        const ringBonb = new RingBomb(this.context);
+        ringBonb.spawnAt(board.getCellAt(6, 6));
+
+        // setTimeout(() => {
+        //     const cells = board.cellsTree.getNonWallCells();
+        //     const cell = cells[Math.floor(Math.random() * cells.length - 1)];
+        //     cell.setAsWood();
+        //     bat1.goTo(cell);
+        //     // bat2.goTo(cell);
+        // }, 1000);
 
         document.getElementById('root').append(app.view);
 

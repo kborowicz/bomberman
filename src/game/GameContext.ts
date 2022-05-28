@@ -1,6 +1,6 @@
 import { Application } from 'pixi.js';
-import Actor from './actors/Actor';
-import Player from './actors/Player';
+import Actor from './entity/actors/Actor';
+import Player from './entity/actors/Player';
 import Board from './board/Board';
 
 export default class GameContext {

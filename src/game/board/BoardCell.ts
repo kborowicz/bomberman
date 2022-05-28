@@ -1,4 +1,4 @@
-import { Sprite, Rectangle } from 'pixi.js';
+import { Container, Sprite } from 'pixi.js';
 import BoundingBox from '../collision/BoundingBox';
 import { HasBoundingBox } from '../collision/HasBoundingBox';
 import { Renderable } from '../Renderable';
@@ -7,9 +7,9 @@ import Board from './Board';
 
 export class BoardCell implements Renderable, HasBoundingBox {
 
-    private readonly sprite: Sprite;
-    private readonly board: Board;
-    private _isWall = false;
+    protected readonly sprite: Sprite;
+    protected readonly board: Board;
+    protected _isWall = false;
 
     public readonly col: number;
     public readonly row: number;
@@ -37,15 +37,17 @@ export class BoardCell implements Renderable, HasBoundingBox {
     public get neighbors(): BoardCell[] {
         return [
             this.board.getCellAt(this.col - 0, this.row - 1),
-            this.board.getCellAt(this.col - 1, this.row - 1),
+            // this.board.getCellAt(this.col - 1, this.row - 1),
             this.board.getCellAt(this.col - 1, this.row - 0),
-            this.board.getCellAt(this.col - 1, this.row + 1),
+            // this.board.getCellAt(this.col - 1, this.row + 1),
             this.board.getCellAt(this.col - 0, this.row + 1),
-            this.board.getCellAt(this.col + 1, this.row + 1),
+            // this.board.getCellAt(this.col + 1, this.row + 1),
             this.board.getCellAt(this.col + 1, this.row - 0),
-            this.board.getCellAt(this.col + 1, this.row - 1),
+            // this.board.getCellAt(this.col + 1, this.row - 1),
         ].filter(cell => !!cell);
     }
+    
+    //TODO get/set block (Block)
 
     public get hash() {
         return this.col + '#' + this.row;
@@ -72,16 +74,16 @@ export class BoardCell implements Renderable, HasBoundingBox {
         this.sprite.texture = Resources.WOOD_TEXTURE;
     }
 
-    public alignObject(sprite: Sprite) {
+    public alignObject(object: Container) {
         const cellSize = this.board.cellSize;
         const x0 = this.col * cellSize;
         const y0 = this.row * cellSize;
 
-        const w = sprite.width;
-        const h = sprite.height;
+        const w = object.width;
+        const h = object.height;
 
-        sprite.x = x0 + (cellSize - w) / 2;
-        sprite.y = y0 + (cellSize - h) / 2;
+        object.x = x0 + (cellSize - w) / 2;
+        object.y = y0 + (cellSize - h) / 2;
     }
 
 }

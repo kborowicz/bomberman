@@ -1,5 +1,6 @@
 import { Container, Sprite } from 'pixi.js';
-import { HasCollider } from '../collision/HasCollider';
+import BoundingBox from '../collision/BoundingBox';
+import { CollisionTest } from '../collision/CollisionTest';
 import { Renderable } from '../Renderable';
 import { BoardCell } from './BoardCell';
 import BoardCellsTree from './BoardCellsTree';
@@ -9,7 +10,7 @@ export interface IBoardProps {
     cellSize?: number
 }
 
-export default class Board implements Renderable, HasCollider {
+export default class Board implements Renderable, CollisionTest {
 
     private readonly cellsContainer: Container;
 
@@ -33,8 +34,8 @@ export default class Board implements Renderable, HasCollider {
         return this.cellsContainer;
     }
 
-    public get collider() {
-        return this.cellsTree;
+    public testCollision(bbox: BoundingBox): boolean {
+        return this.cellsTree.testCollision(bbox);
     }
 
     public getCellAt(col: number, row: number): BoardCell {
@@ -48,15 +49,8 @@ export default class Board implements Renderable, HasCollider {
         return cell;
     }
 
-    public alignWithCell(col: number, row: number, object: Sprite) {
-        const x0 = col * this.cellSize;
-        const y0 = row * this.cellSize;
-
-        const w = object.width;
-        const h = object.height;
-
-        object.x = x0 + (this.cellSize - w) / 2;
-        object.y = y0 + (this.cellSize - h) / 2;
+    public getShortestPath(c0: BoardCell, c1: BoardCell) {
+        return this.pathFinder.find(c0, c1);
     }
 
 }

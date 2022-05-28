@@ -1,5 +1,7 @@
+import BoundingBox from './BoundingBox';
+
 export interface CollisionTest {
 
-    testCollision(): boolean;
+    testCollision(bbox: BoundingBox): boolean;
 
 }

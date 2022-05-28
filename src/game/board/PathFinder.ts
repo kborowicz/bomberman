@@ -4,7 +4,7 @@ import { BoardCell } from './BoardCell';
 
 export default class PathFinder {
 
-    public run(c0: BoardCell, c1: BoardCell): BoardCell[] {
+    public find(c0: BoardCell, c1: BoardCell): BoardPath {
         const heap = new Heap<Node>((a, b) => a.fscore - b.fscore);
         const nodes = new Map<string, Node>();
 
@@ -14,14 +14,15 @@ export default class PathFinder {
         startNode.opened = true;
 
         heap.push(startNode);
-        // nodes.set(startNode.cell.hash);
+        nodes.set(startNode.cell.hash, startNode);
 
         while (!heap.empty()) {
             const currentNode = heap.pop();
             currentNode.closed = true;
 
             if (currentNode.cell == c1) {
-                return currentNode.backtrace().map(node => node.cell);
+                const backtrace = currentNode.backtrace();
+                return new BoardPath(backtrace.map(node => node.cell));
             }
 
             currentNode.cell.neighbors.forEach(neighborCell => {
@@ -100,7 +101,45 @@ class Node {
             currentNode = currentNode.parent;
         }
 
-        return backtrace;
+        return backtrace.reverse();
+    }
+
+}
+
+export class BoardPath {
+
+    public readonly cells: readonly BoardCell[];
+    public readonly points: readonly BoardCell[];
+
+    public constructor(cells: BoardCell[]) {
+        this.cells = cells;
+        this.points = this.getPoints(cells);
+    }
+
+    private getPoints(cells: BoardCell[]): BoardCell[] {
+        const cellsCopy = [...cells];
+        const points: BoardCell[] = [cellsCopy[0]];
+
+        for (let i = 1; i < cellsCopy.length - 1; i++) {
+            const prevCell = cellsCopy[i - 1];
+            const currCell = cellsCopy[i + 0];
+            const nextCell = cellsCopy[i + 1];
+
+            // Find corners
+            const dc1 = Math.abs(currCell.col - prevCell.col) == 1;
+            const dr1 = Math.abs(currCell.row - prevCell.row) == 1;
+            
+            const dc2 = Math.abs(nextCell.col - currCell.col) == 1;
+            const dr2 = Math.abs(nextCell.row - currCell.row) == 1;
+
+            if (dc1 && dr2 || dc2 && dr1) {
+                points.push(currCell);
+            }
+        }
+
+        points.push(cellsCopy.pop());
+
+        return points;
     }
 
 }

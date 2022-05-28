@@ -1,16 +1,15 @@
 import { Application, Sprite, Texture } from 'pixi.js';
 import playerImg from './assets/player.png';
 import Board from './board/Board';
-import BoxCollider from './collision/colliders/BoxCollider';
-import { HasCollider } from './collision/HasCollider';
-import Rectangle from './collision/shapes/Rectangle';
+import BoundingBox from './collision/BoundingBox';
+import { HasBoundingBox } from './collision/HasBoundingBox';
 import Game from './Game';
 import { Renderable } from './Renderable';
 import Dynamite from './weapons/Dynamite';
 import MortarBomb from './weapons/MortarBomb';
 import RingBomb from './weapons/RingBomb';
 
-export default class Player implements Renderable, HasCollider {
+export default class Player implements Renderable, HasBoundingBox {
 
     private readonly sprite: Sprite;
     private readonly game: Game;
@@ -47,51 +46,51 @@ export default class Player implements Renderable, HasCollider {
             }
         });
 
-        app.ticker.add(timeDelta => {
-            const speed = 4.5;
-            const movementDelta = timeDelta * speed;
+        // app.ticker.add(timeDelta => {
+        //     const speed = 4.5;
+        //     const movementDelta = timeDelta * speed;
 
-            let dx = (+this.isDownA * (-1) + +this.isDownD * (+1)) * movementDelta;
-            let dy = (+this.isDownW * (-1) + +this.isDownS * (+1)) * movementDelta;
+        //     let dx = (+this.isDownA * (-1) + +this.isDownD * (+1)) * movementDelta;
+        //     let dy = (+this.isDownW * (-1) + +this.isDownS * (+1)) * movementDelta;
 
-            if (dx != 0 && dy != 0) {
-                dx = Math.sign(dx) * movementDelta / Math.sqrt(2);
-                dy = Math.sign(dy) * movementDelta / Math.sqrt(2);
-            }
+        //     if (dx != 0 && dy != 0) {
+        //         dx = Math.sign(dx) * movementDelta / Math.sqrt(2);
+        //         dy = Math.sign(dy) * movementDelta / Math.sqrt(2);
+        //     }
 
-            if (dx != 0) {
-                const newCollider = new BoxCollider(this.collider.box.shiftX(dx));
+        //     if (dx != 0) {
+        //         const newCollider = new BoxCollider(this.collider.box.shiftX(dx));
 
-                if (!board.collider.testCollision(newCollider)) {
-                    this.sprite.x = newCollider.box.x0;
-                } else {
-                    this.sprite.x = Math.round(this.sprite.x / board.cellSize) * board.cellSize;
-                }
-            }
+        //         if (!board.collider.testCollision(newCollider)) {
+        //             this.sprite.x = newCollider.box.x0;
+        //         } else {
+        //             this.sprite.x = Math.round(this.sprite.x / board.cellSize) * board.cellSize;
+        //         }
+        //     }
 
-            if (dy != 0) {
-                const newCollider = new BoxCollider(this.collider.box.shiftY(dy));
+        //     if (dy != 0) {
+        //         const newCollider = new BoxCollider(this.collider.box.shiftY(dy));
 
-                if (!board.collider.testCollision(newCollider)) {
-                    this.sprite.y = newCollider.box.y0;
-                } else {
-                    this.sprite.y = Math.round(this.sprite.y / board.cellSize) * board.cellSize;
-                }
-            }
-        });
+        //         if (!board.collider.testCollision(newCollider)) {
+        //             this.sprite.y = newCollider.box.y0;
+        //         } else {
+        //             this.sprite.y = Math.round(this.sprite.y / board.cellSize) * board.cellSize;
+        //         }
+        //     }
+        // });
     }
 
     public get renderable() {
         return this.sprite;
     }
 
-    public get collider() {
+    public get bbox() {
         const x0 = this.sprite.x;
         const y0 = this.sprite.y;
         const x1 = x0 + this.sprite.width;
         const y1 = y0 + this.sprite.height;
 
-        return new BoxCollider(Rectangle.fromCoords(x0, y0, x1, y1));
+        return BoundingBox.fromCoords(x0, y0, x1, y1);
     }
 
     public get nearestBoardCell() {

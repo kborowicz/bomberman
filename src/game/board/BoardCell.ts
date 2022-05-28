@@ -1,12 +1,11 @@
-import { Sprite } from 'pixi.js';
-import BoxCollider from '../collision/colliders/BoxCollider';
-import { HasCollider } from '../collision/HasCollider';
-import Rectangle from '../collision/shapes/Rectangle';
+import { Sprite, Rectangle } from 'pixi.js';
+import BoundingBox from '../collision/BoundingBox';
+import { HasBoundingBox } from '../collision/HasBoundingBox';
 import { Renderable } from '../Renderable';
 import Resources from '../Resources';
 import Board from './Board';
 
-export class BoardCell implements Renderable, HasCollider {
+export class BoardCell implements Renderable, HasBoundingBox {
 
     private readonly sprite: Sprite;
     private readonly board: Board;
@@ -14,7 +13,7 @@ export class BoardCell implements Renderable, HasCollider {
 
     public readonly col: number;
     public readonly row: number;
-    public readonly collider: BoxCollider;
+    public readonly bbox: BoundingBox;
 
     public constructor(col: number, row: number, size: number, board: Board) {
         this.board = board;
@@ -27,7 +26,7 @@ export class BoardCell implements Renderable, HasCollider {
         const y1 = y0 + size;
 
         this.sprite = new Sprite(Resources.GRASS_TEXTURE);
-        this.collider = new BoxCollider(Rectangle.fromCoords(x0, y0, x1, y1));
+        this.bbox = BoundingBox.fromCoords(x0, y0, x1, y1);
 
         this.sprite.width = size;
         this.sprite.height = size;
@@ -71,6 +70,18 @@ export class BoardCell implements Renderable, HasCollider {
 
     public setAsWood() {
         this.sprite.texture = Resources.WOOD_TEXTURE;
+    }
+
+    public alignObject(sprite: Sprite) {
+        const cellSize = this.board.cellSize;
+        const x0 = this.col * cellSize;
+        const y0 = this.row * cellSize;
+
+        const w = sprite.width;
+        const h = sprite.height;
+
+        sprite.x = x0 + (cellSize - w) / 2;
+        sprite.y = y0 + (cellSize - h) / 2;
     }
 
 }

@@ -1,13 +1,12 @@
-import { Collider } from '../collision/Collider';
 import RBush from 'rbush';
+import BoundingBox from '../collision/BoundingBox';
+import { CollisionTest } from '../collision/CollisionTest';
 import { BoardCell } from './BoardCell';
-import Rectangle from '../collision/shapes/Rectangle';
-import BoxCollider from '../collision/colliders/BoxCollider';
 
 type OnCellAddListener = (cell: BoardCell) => void;
 type OnCellRemoveListener = (cell: BoardCell) => void;
 
-export default class BoardCellsTree implements Collider {
+export default class BoardCellsTree implements CollisionTest {
 
     private cellsTree: Tree = new Tree();
     private cellsMap: Map<string, BoardCell> = new Map();
@@ -22,28 +21,21 @@ export default class BoardCellsTree implements Collider {
         this.onCellRemoveListener = onRemoveListener;
     }
 
-    public testCollision(other: Collider): boolean {
-        if (other instanceof BoxCollider) {
-            return !!this.findIntersection(other.box).find(cell => {
-                if (cell.isWall) {
-                    const f1 = other.box.intersectionFactorX(cell.collider.box);
-                    const f2 = other.box.intersectionFactorY(cell.collider.box);
+    public testCollision(bbox: BoundingBox): boolean {
+        return !!this.findIntersection(bbox).find(cell => {
+            if (cell.isWall) {
+                const f1 = bbox.intersectionFactorX(cell.bbox);
+                const f2 = bbox.intersectionFactorY(cell.bbox);
 
-                    console.log(f1, f2);
-
-                    return (f1 > 0.01 && f2 > 0.01);
-                } else {
-                    return false;
-                }
-                return cell.isWall;
-            });
-        }
-
-        return false;
+                return (f1 > 0.01 && f2 > 0.01);
+            } else {
+                return false;
+            }
+        });
     }
 
-    public findIntersection(queryRect: Rectangle): BoardCell[] {
-        const { x0, y0, x1, y1 } = queryRect;
+    public findIntersection(bbox: BoundingBox): BoardCell[] {
+        const { x0, y0, x1, y1 } = bbox;
 
         return this.cellsTree.search({
             minX: x0, minY: y0,
@@ -83,17 +75,17 @@ export default class BoardCellsTree implements Collider {
 class Tree extends RBush<BoardCell> {
 
     public toBBox(cell: BoardCell) {
-        const { x0, y0, x1, y1 } = cell.collider.box;
+        const { x0, y0, x1, y1 } = cell.bbox;
 
         return { minX: x0, minY: y0, maxX: x1, maxY: y1 };
     }
 
     public compareMinX(a: BoardCell, b: BoardCell): number {
-        return a.collider.box.p1.x - b.collider.box.p1.x;
+        return a.bbox.p1.x - b.bbox.p1.x;
     }
 
     public compareMinY(a: BoardCell, b: BoardCell): number {
-        return a.collider.box.p2.x - b.collider.box.p2.x;
+        return a.bbox.p2.x - b.bbox.p2.x;
     }
 
 }

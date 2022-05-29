@@ -1,16 +1,26 @@
 import { BoardCell } from '@/game/board/BoardCell';
+import GameContext from '@/game/GameContext';
 import { Container } from 'pixi.js';
-import Entity from '../Entity';
+import Entity, { EntityEventMap } from '../Entity';
+import HealthBar from './HealtBar';
+
+export interface ActorEventMap extends EntityEventMap {
+    'cellchange': (curr: BoardCell, prev: BoardCell) => void;
+    'die': () => void;
+    'spawn': (cell: BoardCell) => void;
+    'move': (dx: number, dy: number) => void;
+    'idle': () => void;
+    'healthchange': (health: number) => void;
+}
 
 export default abstract class Actor<
-    T extends Container = Container
-    > extends Entity<T> {
-
-    // TODO eventy:
+    T extends Container = Container,
+    E extends ActorEventMap = ActorEventMap
+    > extends Entity<T, E> {
 
     private prevCell: BoardCell;
 
-    protected _speed = 2;
+    protected _speed = 4;
     protected _health = 100;
 
     public get speed(): number {
@@ -18,7 +28,25 @@ export default abstract class Actor<
     }
 
     public set speed(value: number) {
-        this._speed = value;
+        this._speed = Math.max(value, 0);
+    }
+
+    public get health(): number {
+        return this._health;
+    }
+
+    public set health(value: number) {
+        this._health = Math.max(value, 0);
+
+        this.emmiter.emit('healthchange', this._health);
+
+        if (this._health == 0) {
+            this.emmiter.emit('die');
+        }
+    }
+
+    public get isAlive() {
+        return this._health > 0;
     }
 
     public get nearestCell() {
@@ -32,9 +60,26 @@ export default abstract class Actor<
         );
     }
 
-    public setPosition(col: number, row: number): void;
-    public setPosition(cell: BoardCell): void;
-    public setPosition(arg1: number | BoardCell, arg2?: number): void {
+    public instantKill() {
+        this.health = 0;
+    }
+
+    public spawnAt(col: number, row: number): void;
+    public spawnAt(cell: BoardCell): void;
+    public spawnAt(arg1: number | BoardCell, arg2?: number) {
+        if (typeof arg1 === 'number') {
+            this.moveToCell(arg1, arg2);
+        } else {
+            this.moveToCell(arg1);
+        }
+
+        this.context.addObject(this);
+        this.emmiter.emit('spawn', this.nearestCell);
+    }
+
+    public moveToCell(col: number, row: number): void;
+    public moveToCell(cell: BoardCell): void;
+    public moveToCell(arg1: number | BoardCell, arg2?: number): void {
         let cell: BoardCell;
 
         if (typeof arg1 === 'number') {
@@ -52,42 +97,58 @@ export default abstract class Actor<
         const board = this.context.board;
         const bbox = this.bbox;
 
-        let newX = this.renderable.x;
-        let newY = this.renderable.y;
-
         if (this.nearestCell != this.prevCell) {
-            console.log(this.nearestCell);
+            this.emmiter.emit('cellchange', this.nearestCell, this.prevCell);
             this.prevCell = this.nearestCell;
         }
+
+        // TODO wspomaganie wejścia w wąskie korytarze
 
         if (dx != 0) {
             const shiftedBbox = bbox.shiftX(dx);
 
-            if (!board.testCollision(shiftedBbox)) {
-                newX = shiftedBbox.x0;
-            } else {
-                // const dirx = Math.sign(dx);
+            if (board.testCollision(shiftedBbox)) {
+                let x0: number;
+                let x1: number;
 
-                // if (dirx > 0) {
-                //     const row = Math.round(this.sprite.x / board.cellSize);
-                // } else {
-                //     const row = Math.round(this.sprite.x / board.cellSize);
-                // }
+                if (dx > 0) {
+                    x0 = this.bbox.x1;
+                    x1 = this.nearestCell.eCell.bbox.x0;
+                } else {
+                    x0 = this.bbox.x0;
+                    x1 = this.nearestCell.wCell.bbox.x1;
+                }
+
+                dx = x1 - x0;
             }
         }
 
         if (dy != 0) {
             const shiftedBbox = bbox.shiftY(dy);
 
-            if (!board.testCollision(shiftedBbox)) {
-                newY = shiftedBbox.y0;
-            } else {
-                // const diry = Math.sign(dy);
+            if (board.testCollision(shiftedBbox)) {
+                let y0: number;
+                let y1: number;
+
+                if (dy > 0) {
+                    y0 = this.bbox.y1;
+                    y1 = this.nearestCell.sCell.bbox.y0;
+                } else {
+                    y0 = this.bbox.y0;
+                    y1 = this.nearestCell.nCell.bbox.y1;
+                }
+
+                dy = y1 - y0;
             }
         }
 
-        this.renderable.x = newX;
-        this.renderable.y = newY;
-    }
+        if (dx != 0 || dy != 0) {
+            this.emmiter.emit('move', dx, dy);
+        } else {
+            this.emmiter.emit('idle');
+        }
 
+        this.renderable.x += dx;
+        this.renderable.y += dy;
+    }
 }

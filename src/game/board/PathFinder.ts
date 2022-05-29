@@ -25,7 +25,7 @@ export default class PathFinder {
                 return new Path(backtrace.map(node => node.cell));
             }
 
-            currentNode.cell.neighbors.forEach(neighborCell => {
+            currentNode.cell.getNeighbors().forEach(neighborCell => {
                 const neighborNode = nodes.get(neighborCell.hash) ?? new Node(neighborCell);
 
                 if (!nodes.has(neighborCell.hash)) {
@@ -62,7 +62,7 @@ export default class PathFinder {
             });
         }
 
-        console.log('error');
+        return null;
     }
 
     private heuristic(c0: BoardCell, c1: BoardCell) {
@@ -71,7 +71,6 @@ export default class PathFinder {
         const d2 = Math.abs(c1.row - c0.row);
 
         return (d1 + d2);
-        return (c1.col - c0.col) ** 2 + (c1.row - c0.row) ** 2;
     }
 
 }

@@ -1,15 +1,15 @@
-import BlockFactory from '../entity/blocks/BlockFactory';
+import BlockFactory, { BlockType } from '../entity/blocks/BlockFactory';
 import GameContext from '../GameContext';
 
 export default class LevelLoader {
 
     public static load(level: ILevelDefinition, context: GameContext) {
         const board = context.board;
-        const blocksMap = new Map<string, string>();
-        
+        const blocksMap = new Map<string, BlockType>();
+
         level.blocks.forEach(b => {
             const block = this.parseBlock(b);
-            
+
             for (let col = block.x0; col <= block.x1; col++) {
                 for (let row = block.y0; row <= block.y1; row++) {
                     const key = col + '#' + row;
@@ -54,5 +54,5 @@ export interface ILevelDefinition {
 
 export interface IBlockDefinition {
     coords: string;
-    type: 'grass' | 'wall' | 'bricks';
+    type: BlockType
 }

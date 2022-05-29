@@ -53,7 +53,7 @@ const config = {
                 ]
             },
             {
-                test: /\.(woff2?|otf|eot|png|jpg|gif)$/,
+                test: /\.(woff2?|otf|eot|png|jpg|gif|mp3)$/,
                 exclude: /node_modules/,
                 loader: 'file-loader',
                 options: {

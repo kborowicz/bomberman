@@ -1,9 +1,9 @@
 import { Container } from 'pixi.js';
 import BoundingBox from '../collision/BoundingBox';
-import { CollisionTest } from '../collision/CollisionTest';
+import { ICollisionTest } from '../collision/ICollisionTest';
 import Block from '../entity/blocks/Block';
 import GameContext from '../GameContext';
-import { Renderable } from '../Renderable';
+import { IRenderable } from '../IRenderable';
 import { BoardCell } from './BoardCell';
 import BoardCellsTree from './BoardCellsTree';
 import PathFinder from './PathFinder';
@@ -12,35 +12,35 @@ export interface IBoardProps {
     cellSize?: number
 }
 
-export default class Board implements Renderable, CollisionTest {
+export default class Board implements IRenderable, ICollisionTest {
 
-    private readonly cellsContainer: Container;
+    private readonly container: Container;
+    private readonly cells: BoardCellsTree;
 
     public readonly context: GameContext;
     public readonly pathFinder: PathFinder;
-    public readonly cellsTree: BoardCellsTree;
-    public readonly cellSize = 40;
+    public readonly cellSize = 42;
 
     public constructor(context: GameContext) {
         this.context = context;
         this.pathFinder = new PathFinder();
-        this.cellsContainer = new Container();
-        this.cellsTree = new BoardCellsTree(
-            cell => this.cellsContainer.addChild(cell.renderable),
-            cell => this.cellsContainer.removeChild(cell.renderable)
+        this.container = new Container();
+        this.cells = new BoardCellsTree(
+            cell => this.container.addChild(cell.renderable),
+            cell => this.container.removeChild(cell.renderable)
         );
     }
 
     public get renderable() {
-        return this.cellsContainer;
+        return this.container;
     }
 
     public testCollision(bbox: BoundingBox): boolean {
-        return this.cellsTree.testCollision(bbox);
+        return this.cells.testCollision(bbox);
     }
 
     public getCellAt(col: number, row: number): BoardCell {
-        return this.cellsTree.getCellAt(col, row);
+        return this.cells.getCellAt(col, row);
     }
 
     public addCell(col: number, row: number, block: Block): BoardCell {
@@ -50,14 +50,18 @@ export default class Board implements Renderable, CollisionTest {
         cell.block.renderable.width = this.cellSize;
         cell.block.renderable.height = this.cellSize;
 
-        this.cellsContainer.addChild(cell.block.renderable);
-        this.cellsTree.addCell(cell);
+        this.container.addChild(cell.block.renderable);
+        this.cells.addCell(cell);
 
         return cell;
     }
 
-    public getShortestPath(c0: BoardCell, c1: BoardCell) {
-        return this.pathFinder.find(c0, c1);
+    public getNonWallCells() {
+        return this.cells.getNonWallCells();
+    }
+
+    public getRandomNonWallCell(): BoardCell {
+        return this.cells.getRandomNonWallCell();
     }
 
 }

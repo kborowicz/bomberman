@@ -1,11 +1,11 @@
 import { Container } from 'pixi.js';
-import { HasBoundingBox } from '../collision/HasBoundingBox';
+import { IHasBoundingBox } from '../collision/IHasBoundingBox';
 import Block from '../entity/blocks/Block';
-import Grass from '../entity/blocks/Grass';
-import { Renderable } from '../Renderable';
+import Floor from '../entity/blocks/Floor';
+import { IRenderable } from '../IRenderable';
 import Board from './Board';
 
-export class BoardCell implements Renderable, HasBoundingBox {
+export class BoardCell implements IRenderable, IHasBoundingBox {
 
     public readonly board: Board;
     public readonly col: number;
@@ -18,19 +18,6 @@ export class BoardCell implements Renderable, HasBoundingBox {
         this.col = col;
         this.row = row;
         this._block = block;
-    }
-
-    public get neighbors(): BoardCell[] {
-        return [
-            this.board.getCellAt(this.col - 0, this.row - 1),
-            // this.board.getCellAt(this.col - 1, this.row - 1),
-            this.board.getCellAt(this.col - 1, this.row - 0),
-            // this.board.getCellAt(this.col - 1, this.row + 1),
-            this.board.getCellAt(this.col - 0, this.row + 1),
-            // this.board.getCellAt(this.col + 1, this.row + 1),
-            this.board.getCellAt(this.col + 1, this.row - 0),
-            // this.board.getCellAt(this.col + 1, this.row - 1),
-        ].filter(cell => !!cell);
     }
 
     public get renderable() {
@@ -67,7 +54,7 @@ export class BoardCell implements Renderable, HasBoundingBox {
         }
 
         if (!value) {
-            value = new Grass(this.board.context);
+            value = new Floor(this.board.context);
         }
 
         value.renderable.x = this.col * this.board.cellSize;
@@ -76,7 +63,51 @@ export class BoardCell implements Renderable, HasBoundingBox {
         value.renderable.height = this.board.cellSize;
 
         this._block = value;
-        this.board.context.addObject(this._block);
+        this.board.renderable.addChild(this._block.renderable);
+
+        // TODO powiadamianie boarda o zmianie 
+    }
+
+    public get nCell() {
+        return this.board.getCellAt(this.col - 0, this.row - 1);
+    }
+
+    public get nwCell() {
+        return this.board.getCellAt(this.col - 1, this.row - 1);
+    }
+
+    public get wCell() {
+        return this.board.getCellAt(this.col - 1, this.row - 0);
+    }
+
+    public get swCell() {
+        return this.board.getCellAt(this.col - 1, this.row + 1);
+    }
+
+    public get sCell() {
+        return this.board.getCellAt(this.col - 0, this.row + 1);
+    }
+
+    public get seCell() {
+        return this.board.getCellAt(this.col + 1, this.row + 1);
+    }
+
+    public get eCell() {
+        return this.board.getCellAt(this.col + 1, this.row + 0);
+    }
+
+    public get neCell() {
+        return this.board.getCellAt(this.col + 1, this.row - 1);
+    }
+
+    public getNeighbors(diaglonal = true) {
+        const neighbors = [this.nCell, this.wCell, this.sCell, this.eCell];
+
+        if (diaglonal) {
+            neighbors.push(this.nwCell, this.swCell, this.seCell, this.neCell);
+        }
+
+        return neighbors.filter(cell => !!cell);
     }
 
     public setAsDefault() {

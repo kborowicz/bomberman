@@ -1,7 +1,7 @@
-import { CollisionTest } from './CollisionTest';
+import { ICollisionTest } from './ICollisionTest';
 import Point from './Point';
 
-export default class BoundingBox implements CollisionTest {
+export default class BoundingBox implements ICollisionTest {
 
     public readonly p1: Point;
     public readonly p2: Point;

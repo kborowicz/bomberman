@@ -1,12 +1,12 @@
 import RBush from 'rbush';
 import BoundingBox from '../collision/BoundingBox';
-import { CollisionTest } from '../collision/CollisionTest';
+import { ICollisionTest } from '../collision/ICollisionTest';
 import { BoardCell } from './BoardCell';
 
 type OnCellAddListener = (cell: BoardCell) => void;
 type OnCellRemoveListener = (cell: BoardCell) => void;
 
-export default class BoardCellsTree implements CollisionTest {
+export default class BoardCellsTree implements ICollisionTest {
 
     private cellsTree: Tree = new Tree();
     private cellsMap: Map<string, BoardCell> = new Map();
@@ -62,6 +62,11 @@ export default class BoardCellsTree implements CollisionTest {
 
     public getNonWallCells() {
         return [...this.cellsMap.values()].filter(cell => !cell.isWall);
+    }
+
+    public getRandomNonWallCell() {
+        const nonWallCells = this.getNonWallCells();
+        return nonWallCells[Math.floor(Math.random() * nonWallCells.length)];
     }
 
     private getMapKey(col: number, row: number) {

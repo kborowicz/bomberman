@@ -1,6 +1,6 @@
 import BoundingBox from './BoundingBox';
 
-export interface HasBoundingBox {
+export interface IHasBoundingBox {
 
     bbox: BoundingBox;
 

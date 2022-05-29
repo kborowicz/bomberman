@@ -1,0 +1,228 @@
+{
+    "frames": {
+        "c2_down_1": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 0, "y": 0, "w": 64,"h": 64 
+            }
+        },
+        "c2_down_2": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 64, "y": 0, "w": 64,"h": 64 
+            }
+        },
+        "c2_down_3": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 128, "y": 0, "w": 64,"h": 64 
+            }
+        },
+        "c2_down_4": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 192, "y": 0, "w": 64,"h": 64 
+            }
+        },
+        "c2_left_1": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 0, "y": 64, "w": 64,"h": 64 
+            }
+        },
+        "c2_left_2": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 64, "y": 64, "w": 64,"h": 64 
+            }
+        },
+        "c2_left_3": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 128, "y": 64, "w": 64,"h": 64 
+            }
+        },
+        "c2_left_4": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 192, "y": 64, "w": 64,"h": 64 
+            }
+        },
+        "c2_right_1": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 0, "y": 128, "w": 64,"h": 64 
+            }
+        },
+        "c2_right_2": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 64, "y": 128, "w": 64,"h": 64 
+            }
+        },
+        "c2_right_3": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 128, "y": 128, "w": 64,"h": 64 
+            }
+        },
+        "c2_right_4": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 192, "y": 128, "w": 64,"h": 64 
+            }
+        },
+        "c2_up_1": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 0, "y": 192, "w": 64,"h": 64 
+            }
+        },
+        "c2_up_2": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 64, "y": 192, "w": 64,"h": 64 
+            }
+        },
+        "c2_up_3": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 128, "y": 192, "w": 64,"h": 64 
+            }
+        },
+        "c2_up_4": {
+            "rotated": false,
+            "trimmed": false,
+            "sourceSize": { 
+                "w": 64, "h": 64 
+            },
+            "spriteSourceSize": { 
+                "x": 0, "y": 0, "w": 64, "h": 64 
+            },
+            "frame": { 
+                "x": 192, "y": 192, "w": 64,"h": 64 
+            }
+        }
+    },
+    "animations": {
+        "down": ["c2_down_1", "c2_down_2", "c2_down_3", "c2_down_4"],
+        "left": ["c2_left_1", "c2_left_2", "c2_left_3", "c2_left_4"],
+        "right": ["c2_right_1", "c2_right_2", "c2_right_3", "c2_right_4"],
+        "up": ["c2_up_1", "c2_up_2", "c2_up_3", "c2_up_4"]
+    },
+    "meta": {
+        "version": "1.0",
+        "image": "2.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 256,
+            "h": 256
+        },
+        "scale": "1"
+    }
+}

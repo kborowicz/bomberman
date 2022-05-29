@@ -2,7 +2,7 @@ import Resources from '@/game/Resources';
 import { Container, Sprite } from 'pixi.js';
 import Block from './Block';
 
-export default class Grass extends Block {
+export default class Floor extends Block {
 
     private sprite = Sprite.from(Resources.GRASS_TEXTURE);
 
@@ -17,9 +17,5 @@ export default class Grass extends Block {
     public get renderable(): Container {
         return this.sprite;
     }
-
-    // public setAsWood() {
-    //     this.sprite.texture = Resources.WOOD_TEXTURE;
-    // }
 
 }

@@ -13,17 +13,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/game/assets/dynamite.png":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "dynamite.png");
-
-/***/ }),
-
 /***/ "./src/game/assets/explosion/explosion.png":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -43,6 +32,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "grass.png");
+
+/***/ }),
+
+/***/ "./src/game/assets/player.png":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "player.png");
 
 /***/ }),
 
@@ -124,6 +124,9 @@ class Game {
         // ringBomb.spawnAt(board.getCellAt(7, 7));
         const p = new _entity_actors_enemies_BatEnemy__WEBPACK_IMPORTED_MODULE_1__["default"](this.context);
         p.setPosition(13, 13);
+        // p.move(10,0)
+        const b1 = p.bbox;
+        const b2 = board.getCellAt(14, 13).bbox;
         p.goTo(1, 1);
         setTimeout(() => {
             p.goTo(13, 1);
@@ -216,7 +219,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _assets_explosion_explosion_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/game/assets/explosion/explosion.png");
 /* harmony import */ var _assets_grass_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/game/assets/grass.png");
 /* harmony import */ var _assets_wall_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/game/assets/wall.png");
-/* harmony import */ var _assets_dynamite_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/assets/dynamite.png");
+/* harmony import */ var _assets_player_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/game/assets/player.png");
 /* harmony import */ var _assets_stone_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/game/assets/stone.png");
 /* harmony import */ var _assets_bricks_png__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/game/assets/bricks.png");
 /* harmony import */ var _loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/game/loader/AssetsLoader.ts");
@@ -232,7 +235,7 @@ class Resources {
     static async initialize() {
         this.GRASS_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_grass_png__WEBPACK_IMPORTED_MODULE_2__["default"]);
         this.WALL_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_wall_png__WEBPACK_IMPORTED_MODULE_3__["default"]);
-        this.WOOD_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_dynamite_png__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        this.WOOD_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_player_png__WEBPACK_IMPORTED_MODULE_4__["default"]);
         this.STONE_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_stone_png__WEBPACK_IMPORTED_MODULE_5__["default"]);
         this.BRICK_TEXTURE = (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadTexture)(_assets_bricks_png__WEBPACK_IMPORTED_MODULE_6__["default"]);
         this.EXPLOSION_SPRITESHEET = await (0,_loader_AssetsLoader__WEBPACK_IMPORTED_MODULE_7__.loadSpritesheet)(_assets_explosion_explosion_png__WEBPACK_IMPORTED_MODULE_1__["default"], _assets_explosion_explosion_json__WEBPACK_IMPORTED_MODULE_0__);
@@ -467,9 +470,7 @@ class BoardCellsTree {
     testCollision(bbox) {
         return !!this.findIntersection(bbox).find(cell => {
             if (cell.isWall) {
-                const f1 = bbox.intersectionFactorX(cell.bbox);
-                const f2 = bbox.intersectionFactorY(cell.bbox);
-                console.log(f1, f2);
+                const [f1, f2] = bbox.getIntersection(cell.bbox);
                 return (f1 > 0.01 && f2 > 0.01);
             }
             else {
@@ -749,39 +750,12 @@ class BoundingBox {
         }
         return true;
     }
-    intersectionFactorX(bbox) {
-        const r1x1 = this.p1.x;
-        const r1x2 = this.p2.x;
-        const r2x1 = bbox.p1.x;
-        const r2x2 = bbox.p2.x;
-        if (r2x1 >= r1x2 || r1x1 >= r2x2) {
-            return 0;
-        }
-        else {
-            if (r2x1 > r1x2) {
-                return r2x1 - r1x2;
-            }
-            else {
-                return r1x1 - r2x2;
-            }
-        }
-    }
-    intersectionFactorY(bbox) {
-        const r1y1 = this.p1.y;
-        const r1y2 = this.p2.y;
-        const r2y1 = bbox.p1.y;
-        const r2y2 = bbox.p2.y;
-        if (r2y1 >= r1y2 || r1y1 >= r2y2) {
-            return 0;
-        }
-        else {
-            if (r2y1 > r1y2) {
-                return r2y1 - r1y2;
-            }
-            else {
-                return r1y1 - r2y2;
-            }
-        }
+    getIntersection(bbox) {
+        const x0 = Math.max(this.x0, bbox.x0);
+        const y0 = Math.max(this.y0, bbox.y0);
+        const x1 = Math.min(this.x1, bbox.x1);
+        const y1 = Math.min(this.y1, bbox.y1);
+        return [x1 - x0, y1 - y0];
     }
     static fromCoords(x0, y0, x1, y1) {
         return new BoundingBox(new _Point__WEBPACK_IMPORTED_MODULE_0__["default"](x0, y0), new _Point__WEBPACK_IMPORTED_MODULE_0__["default"](x1, y1));
@@ -1114,7 +1088,7 @@ class Movement {
         if (!pathPoints.length) {
             return null;
         }
-        let movement = this.getMovementData(this.actor.nearestCell.bbox, pathPoints.shift().bbox);
+        let movement = this.getMovementData(this.actor.bbox, pathPoints.shift().bbox);
         this.tickerCallback = (dt) => {
             if (this._isPaused) {
                 return;
@@ -1137,6 +1111,7 @@ class Movement {
             if (Math.abs(dy) <= Movement.epsilon) {
                 dy = 0;
             }
+            // console.log(dx, dy)
             if (dx == 0 && dy == 0) {
                 this.actor.nearestCell.alignObject(this.actor.renderable);
                 const nextCell = pathPoints.shift();
@@ -1148,6 +1123,7 @@ class Movement {
                 }
             }
             else {
+                console.log(movement);
                 this.actor.move(dx, dy);
             }
         };
@@ -1290,6 +1266,9 @@ class Grass extends _Block__WEBPACK_IMPORTED_MODULE_2__["default"] {
             writable: true,
             value: pixi_js__WEBPACK_IMPORTED_MODULE_1__.Sprite.from(_game_Resources__WEBPACK_IMPORTED_MODULE_0__["default"].GRASS_TEXTURE)
         });
+        // public setAsWood() {
+        //     this.sprite.texture = Resources.WOOD_TEXTURE;
+        // }
     }
     get isWall() {
         return false;

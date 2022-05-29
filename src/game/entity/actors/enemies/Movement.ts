@@ -36,7 +36,7 @@ export default class Movement {
         }
 
         let movement: IMovementData = this.getMovementData(
-            this.actor.nearestCell.bbox,
+            this.actor.bbox,
             pathPoints.shift().bbox
         );
 
@@ -70,6 +70,8 @@ export default class Movement {
                 dy = 0;
             }
 
+            // console.log(dx, dy)
+
             if (dx == 0 && dy == 0) {
                 this.actor.nearestCell.alignObject(this.actor.renderable);
                 const nextCell = pathPoints.shift();
@@ -83,6 +85,7 @@ export default class Movement {
                     this.cancel();
                 }
             } else {
+                console.log(movement)
                 this.actor.move(dx, dy);
             }
 

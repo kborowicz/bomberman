@@ -37,6 +37,11 @@ export default class Game {
 
         const p = new BatEnemy(this.context);
         p.setPosition(13, 13);
+        // p.move(10,0)
+
+        const b1 = p.bbox;
+        const b2 = board.getCellAt(14, 13).bbox;
+
         p.goTo(1, 1);
 
         setTimeout(() => {

@@ -24,11 +24,7 @@ export default class BoardCellsTree implements CollisionTest {
     public testCollision(bbox: BoundingBox): boolean {
         return !!this.findIntersection(bbox).find(cell => {
             if (cell.isWall) {
-                const f1 = bbox.intersectionFactorX(cell.bbox);
-                const f2 = bbox.intersectionFactorY(cell.bbox);
-
-                console.log(f1, f2)
-
+                const [f1, f2] = bbox.getIntersection(cell.bbox);
                 return (f1 > 0.01 && f2 > 0.01);
             } else {
                 return false;

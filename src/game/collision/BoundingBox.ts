@@ -64,38 +64,13 @@ export default class BoundingBox implements CollisionTest {
         return true;
     }
 
-    public intersectionFactorX(bbox: BoundingBox): number {
-        const r1x1 = this.p1.x;
-        const r1x2 = this.p2.x;
-        const r2x1 = bbox.p1.x;
-        const r2x2 = bbox.p2.x;
+    public getIntersection(bbox: BoundingBox) {
+        const x0 = Math.max(this.x0, bbox.x0);
+        const y0 = Math.max(this.y0, bbox.y0);
+        const x1 = Math.min(this.x1, bbox.x1);
+        const y1 = Math.min(this.y1, bbox.y1);
 
-        if (r2x1 >= r1x2 || r1x1 >= r2x2) {
-            return 0;
-        } else {
-            if (r2x1 > r1x2) {
-                return r2x1 - r1x2;
-            } else {
-                return r1x1 - r2x2;
-            }
-        }
-    }
-
-    public intersectionFactorY(bbox: BoundingBox): number {
-        const r1y1 = this.p1.y;
-        const r1y2 = this.p2.y;
-        const r2y1 = bbox.p1.y;
-        const r2y2 = bbox.p2.y;
-
-        if (r2y1 >= r1y2 || r1y1 >= r2y2) {
-            return 0;
-        } else {
-            if (r2y1 > r1y2) {
-                return r2y1 - r1y2;
-            } else {
-                return r1y1 - r2y2;
-            }
-        }
+        return [x1 - x0, y1 - y0];
     }
 
     public static fromCoords(x0: number, y0: number, x1: number, y1: number) {

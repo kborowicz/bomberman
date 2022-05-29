@@ -17,4 +17,9 @@ export default class Grass extends Block {
     public get renderable(): Container {
         return this.sprite;
     }
+
+    // public setAsWood() {
+    //     this.sprite.texture = Resources.WOOD_TEXTURE;
+    // }
+
 }

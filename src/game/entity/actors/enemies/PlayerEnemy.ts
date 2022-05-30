@@ -1,21 +1,21 @@
 import { BoardCell } from '@/game/board/BoardCell';
 import GameContext from '@/game/GameContext';
+import CharacterSprite from '@/game/sprite/CharacterSprite';
 import Bomb from '@/game/weapons/Bomb';
-import { Container, Sprite } from 'pixi.js';
+import { OutlineFilter } from '@pixi/filter-outline';
 import Resources from '../../../Resources';
 import Actor from '../Actor';
-import ActorSprite from '../../../sprite/CharacterSprite';
 import Enemy from './Enemy';
-import CharacterSprite from '../../../sprite/CharacterSprite';
 
 export default class PlayerEnemy extends Enemy {
 
-    protected sprite: ActorSprite;
+    protected sprite: CharacterSprite;
     private prevTargetCell: BoardCell;
 
     public constructor(context: GameContext) {
         super(context);
         this.sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_1);
+        this.sprite.filters = [new OutlineFilter(1)];
         this.container.addChild(this.sprite);
 
         this.on('spawn', () => {

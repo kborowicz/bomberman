@@ -17,20 +17,31 @@ export default abstract class Actor<
     E extends ActorEventMap = ActorEventMap
     > extends Entity<E> {
 
+    private static actorCounter = 0;
+
+    protected readonly _id: string;
     protected currentCell: BoardCell;
     protected healthBar: HealthBar;
 
     protected _speed = 4;
     protected _health = this.maxHealth;
+    protected _isMoving = false;
 
     public constructor(context: GameContext) {
         super(context);
         this.healthBar = new HealthBar(context.cellSize);
         this.container.addChild(this.healthBar.renderable);
 
+        this._id = 'actor_' + Actor.actorCounter;
+        Actor.actorCounter++;
+
         this.on('healthchange', health => {
             this.healthBar.setHealth(health, this.maxHealth);
         });
+    }
+
+    public get id(): string {
+        return this._id;
     }
 
     public get speed(): number {
@@ -53,6 +64,10 @@ export default abstract class Actor<
         if (this._health == 0) {
             this.emmiter.emit('die');
         }
+    }
+
+    public get isMoving() {
+        return this._isMoving;
     }
 
     public get isAlive() {
@@ -157,8 +172,10 @@ export default abstract class Actor<
         }
 
         if (dx != 0 || dy != 0) {
+            this._isMoving = true;
             this.emmiter.emit('move', dx, dy);
         } else {
+            this._isMoving = false;
             this.emmiter.emit('idle');
         }
 

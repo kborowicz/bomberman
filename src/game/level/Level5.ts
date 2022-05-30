@@ -5,13 +5,15 @@ import GameContext from '../GameContext';
 import BoardBuilder from './BoardBuilder';
 import { ILevel } from './Level';
 
-export default class Level2 implements ILevel {
+export default class Level1 implements ILevel {
 
     public getName(): string {
-        return 'Level 2';
+        return 'Level 5';
     }
 
     public load(context: GameContext): void | Promise<void> {
+        const { app, board } = context;
+
         this.initBoard(context);
         context.resize();
     }
@@ -19,28 +21,16 @@ export default class Level2 implements ILevel {
     public start(context: GameContext) {
         context.player.spawnAt(1, 1);
 
-        // const enemy1 = new PlayerEnemy(this.context);
-        // enemy1.spawnAt(13, 13);
+        const enemy1 = new FlashEnemy(context);
+        enemy1.spawnAt(13, 13);
 
-        // const enemy2 = new FlashEnemy(context);
-        // enemy2.spawnAt(13, 13);
+        const enemy2 = new ThrowerEnemy(context);
+        enemy2.spawnAt(1, 13);
 
-        // // const enemy3 = new FlashEnemy(this.context);
-        // // enemy3.spawnAt(1, 13);
+        const enemy3 = new ThrowerEnemy(context);
+        enemy3.spawnAt(13, 1);
 
-        // // const enemy4 = new FlashEnemy(this.context);
-        // // enemy4.spawnAt(13, 1);
-
-        const enemy5 = new ThrowerEnemy(context);
-        enemy5.spawnAt(13, 1);
-        context.addActors(enemy5);
-
-        // for (let i = 0; i < 6; i++) {
-        //     const cell = context.board.getRandomNonWallCell();
-        //     const enemy = new FlashEnemy(context);
-        //     context.addActors(enemy);
-        //     enemy.spawnAt(cell);
-        // }
+        context.addActors(enemy1, enemy2, enemy3);
     }
 
     private initBoard(context: GameContext) {
@@ -65,6 +55,21 @@ export default class Level2 implements ILevel {
         builder.fillCell(1, 7, 'wall');
         builder.fillCell(7, 13, 'wall');
         builder.fillCell(13, 7, 'wall');
+
+        builder.fillVerticalLine(6, 5, 9, 'wall');
+        builder.fillVerticalLine(8, 5, 9, 'wall');
+
+        builder.fillHorizontalLine(6, 5, 9, 'wall');
+        builder.fillHorizontalLine(8, 5, 9, 'wall');
+
+        builder.fillVerticalLine(7, 5, 9, 'bricks');
+        builder.fillHorizontalLine(7, 5, 9, 'bricks');
+        builder.fillCell(7, 7, 'grass');
+
+        builder.fillCell(2, 2, 'bricks');
+        builder.fillCell(2, 12, 'bricks');
+        builder.fillCell(12, 2, 'bricks');
+        builder.fillCell(12, 12, 'bricks');
 
         builder.build();
     }

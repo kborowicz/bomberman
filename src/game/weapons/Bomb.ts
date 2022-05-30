@@ -1,18 +1,17 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
-import { AnimatedSprite, Container, DisplayObject, Sprite } from 'pixi.js';
+import { Howl } from 'howler';
+import { DisplayObject, Sprite } from 'pixi.js';
+import bombSoundSrc from '../assets/explosion/bomb.mp3';
 import { BoardCell } from '../board/BoardCell';
-import BresenhamCircle from '../utils/BresenhamCircle';
-import Floor from '../entity/blocks/Floor';
+import BoundingBox from '../collision/BoundingBox';
+import Actor from '../entity/actors/Actor';
 import GameContext from '../GameContext';
 import Resources from '../Resources';
-import Weapon from './Weapon';
-import sleep from '../utils/sleep';
-
-import explosionSoundSrc from '../assets/explosion/explosion.mp3';
-import { Howl, Howler } from 'howler';
 import ExplosionSprite from '../sprite/ExplosionSprite';
-import Actor, { ActorEventMap } from '../entity/actors/Actor';
-import BoundingBox from '../collision/BoundingBox';
+import WeaponSprite from '../sprite/WeaponSprite';
+import BresenhamCircle from '../utils/BresenhamCircle';
+import sleep from '../utils/sleep';
+import Weapon from './Weapon';
 
 export interface IRingBombProps {
     radius?: number,
@@ -25,6 +24,9 @@ export default class Bomb extends Weapon {
     private readonly radius: number;
     private readonly delay: number;
     private readonly propagationDelay: number;
+
+    //TODO lepiej rozwiązać dostęp do zmiennej
+    public sprite: WeaponSprite;
 
     public constructor(context: GameContext, props?: IRingBombProps) {
         super(context);
@@ -39,13 +41,21 @@ export default class Bomb extends Weapon {
         const { stage } = app;
 
         // Before explosion
-        const bombSprite = Sprite.from(Resources.BOMB_TEXTURE);
-        bombSprite.width = cellSize;
-        bombSprite.height = cellSize;
-        target.alignObject(bombSprite);
+        const bombSprite = new WeaponSprite(cellSize);
+        bombSprite.addAndFill(Sprite.from(Resources.BOMB_TEXTURE));
+        bombSprite.align(target);
+
+        this.sprite = bombSprite;
 
         stage.addChild(bombSprite);
-        await sleep(this.delay);
+
+        const timerSteps = 3;
+        const stepDelay = this.delay / timerSteps;
+        for (let i = 0; i < timerSteps; i++) {
+            bombSprite.timerValue = timerSteps - i;
+            await sleep(stepDelay);
+        }
+
         bombSprite.destroy();
 
         // After explosion
@@ -69,7 +79,7 @@ export default class Bomb extends Weapon {
         ticker.add(updateShockWave);
 
         const explosionSound = new Howl({
-            src: [explosionSoundSrc],
+            src: [bombSoundSrc],
             volume: 0.1
         });
         explosionSound.play();
@@ -122,5 +132,5 @@ export default class Bomb extends Weapon {
         ticker.remove(updateShockWave);
         stage.filters.splice(stage.filters.indexOf(shockWaveFilter), 1);
     }
-    
+
 }

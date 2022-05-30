@@ -1,24 +1,20 @@
 import GameContext from '@/game/GameContext';
 import Resources from '@/game/Resources';
+import CharacterSprite from '@/game/sprite/CharacterSprite';
+import TombstoneSprite from '@/game/sprite/TombstoneSprite';
 import sleep from '@/game/utils/sleep';
-import Bomb from '@/game/weapons/Bomb';
 import Dynamite from '@/game/weapons/Dynamite';
-import { AdvancedBloomFilter } from '@pixi/filter-advanced-bloom';
 import { MotionBlurFilter } from '@pixi/filter-motion-blur';
-import { Container, Point, Sprite } from 'pixi.js';
-import CharacterSprite from '../../../sprite/CharacterSprite';
-import ActorSprite from '../../../sprite/CharacterSprite';
+import { Point } from 'pixi.js';
 import Enemy from './Enemy';
 
 export default class FlashEnemy extends Enemy {
 
-    protected sprite: ActorSprite;
+    protected sprite: CharacterSprite;
 
     public constructor(context: GameContext) {
         super(context);
         this.sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_2);
-        this.sprite.width = this.context.cellSize;
-        this.sprite.height = this.context.cellSize;
         this.container.addChild(this.sprite);
 
         const motionBlurFilter = new MotionBlurFilter();
@@ -47,19 +43,22 @@ export default class FlashEnemy extends Enemy {
                 }
 
                 movement.on('finish', () => startNewMove());
+                movement.on('change', () => {
+                    if (!this.isAlive) {
+                        movement.cancel();
+                    }
+                });
                 movement.start();
             };
 
             startNewMove();
 
             const deployBomb = async () => {
-                if (!this.isAlive) {
+                if (!this.isAlive || context.isDestroyed) {
                     return;
                 }
 
                 await sleep(Math.random() * (3000 - 2500) + 2500);
-                // const bomb = new Bomb(this.context);
-                // bomb.spawnAt(this.nearestCell, this);
 
                 const dynamite = new Dynamite(this.context);
                 dynamite.spawnAt(this.nearestCell, this);
@@ -80,6 +79,11 @@ export default class FlashEnemy extends Enemy {
         });
 
         this.on('idle', () => this.sprite.stop());
+
+        this.on('die', () => {
+            this.container.removeChildren();
+            this.container.addChild(new TombstoneSprite(context.cellSize));
+        });
     }
 
 }

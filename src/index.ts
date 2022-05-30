@@ -2,6 +2,7 @@ import Game from './game/Game';
 import { ILevel } from './game/level/Level';
 import Level1 from './game/level/Level1';
 import Level2 from './game/level/Level2';
+import Level5 from './game/level/Level5';
 import './index.scss';
 
 class Overlay {
@@ -62,7 +63,7 @@ class LevelListElement {
     const menuEl = document.getElementById('menu');
     const overlay = new Overlay();
 
-    const levels = [new Level1(), new Level2()];
+    const levels = [new Level1(), new Level2(), new Level5()];
     const levelListEls: LevelListElement[] = [];
 
     levels.forEach(level => {

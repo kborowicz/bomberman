@@ -1,13 +1,15 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
-import { Container, DisplayObject, Sprite } from 'pixi.js';
+import { Howl } from 'howler';
+import { DisplayObject, Sprite } from 'pixi.js';
+import dynamiteSoundSrc from '../assets/explosion/dynamite.mp3';
 import { BoardCell } from '../board/BoardCell';
 import BoundingBox from '../collision/BoundingBox';
 import Actor from '../entity/actors/Actor';
 import Resources from '../Resources';
-import sleep from '../utils/sleep';
 import ExplosionSprite from '../sprite/ExplosionSprite';
-import Weapon from './Weapon';
 import WeaponSprite from '../sprite/WeaponSprite';
+import sleep from '../utils/sleep';
+import Weapon from './Weapon';
 
 export interface IDynamiteProps {
 
@@ -15,26 +17,27 @@ export interface IDynamiteProps {
 
 export default class Dynamite extends Weapon {
 
+    private delay = 2000;
+
     public async spawnAt(target: BoardCell, owner: Actor) {
         const { app, board, cellSize, ticker, actors } = this.context;
         const { stage } = app;
 
         // Before explosion
-        const dynamiteSprtiee = new WeaponSprite(cellSize);
-        dynamiteSprtiee.addAndFill(Sprite.from(Resources.DYNAMITE_TEXTURE));
-        dynamiteSprtiee.align(target);
-        // dynamiteSprtiee.timerValue = 5;
+        const dynamiteSprite = new WeaponSprite(cellSize);
+        dynamiteSprite.addAndFill(Sprite.from(Resources.DYNAMITE_TEXTURE));
+        dynamiteSprite.align(target);
 
-        const dynamiteSprite = Sprite.from(Resources.DYNAMITE_TEXTURE);
-        dynamiteSprite.width = cellSize;
-        dynamiteSprite.height = cellSize;
-        target.alignObject(dynamiteSprite);
+        stage.addChild(dynamiteSprite);
 
-        // stage.addChild(dynamiteSprite);
-        stage.addChild(dynamiteSprtiee);
-        await sleep(2000);
-        // dynamiteSprite.destroy();
-        dynamiteSprtiee.destroy();
+        const timerSteps = 3;
+        const stepDelay = this.delay / timerSteps;
+        for (let i = 0; i < timerSteps; i++) {
+            dynamiteSprite.timerValue = timerSteps - i;
+            await sleep(stepDelay);
+        }
+
+        dynamiteSprite.destroy();
 
         // After explosion
         const addedRenderables: DisplayObject[] = [];
@@ -55,6 +58,12 @@ export default class Dynamite extends Weapon {
 
         const updateShockWave = () => shockWaveFilter.time += 0.01;
         ticker.add(updateShockWave);
+
+        const explosionSound = new Howl({
+            src: [dynamiteSoundSrc],
+            volume: 0.3
+        });
+        explosionSound.play();
 
         const { col: c0, row: r0 } = target;
 

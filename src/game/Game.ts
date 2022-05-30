@@ -1,6 +1,6 @@
 import { utils } from 'pixi.js';
 import GameContext from './GameContext';
-import Level from './level/Level';
+import { Level } from './level/Level';
 import Resources from './Resources';
 
 export default class Game {
@@ -18,8 +18,9 @@ export default class Game {
     }
 
     public async loadLevel(level: Level) {
+        this._context.reset();
         const {app, board} = this._context;
-        await level.load();
+        await level.load(this._context);
 
         app.screen.width = board.renderable.width;
         app.screen.height = board.renderable.height;

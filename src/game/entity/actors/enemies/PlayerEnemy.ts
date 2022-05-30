@@ -9,14 +9,15 @@ import Enemy from './Enemy';
 
 export default class PlayerEnemy extends Enemy {
 
-    private _sprite: ActorSprite;
+    protected sprite: ActorSprite;
     private prevTargetCell: BoardCell;
 
     public constructor(context: GameContext) {
         super(context);
-        this._sprite = new ActorSprite(Resources.CHARACTER_1);
-        this._sprite.width = this.context.cellSize;
-        this._sprite.height = this.context.cellSize;
+        this.sprite = new ActorSprite(Resources.CHARACTER_1);
+        this.sprite.width = this.context.cellSize;
+        this.sprite.height = this.context.cellSize;
+        this.container.addChild(this.sprite);
 
         this.on('spawn', () => {
             this.tryToKillActor(this.context.player);
@@ -27,15 +28,11 @@ export default class PlayerEnemy extends Enemy {
         });
 
         this.on('move', (dx, dy) => {
-            this._sprite.setDirection(dx, dy);
-            this._sprite.play();
+            this.sprite.setDirection(dx, dy);
+            this.sprite.play();
         });
 
-        this.on('idle', () => this._sprite.stop());
-    }
-
-    public get renderable(): Container {
-        return this._sprite;
+        this.on('idle', () => this.sprite.stop());
     }
 
     private tryToKillActor(actor: Actor) {

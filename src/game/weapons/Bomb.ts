@@ -9,9 +9,10 @@ import Weapon from './Weapon';
 import sleep from '../utils/sleep';
 
 import explosionSoundSrc from '../assets/explosion/explosion.mp3';
-import {Howl, Howler} from 'howler';
+import { Howl, Howler } from 'howler';
 import ExplosionSprite from './ExplosionSprite';
 import Actor, { ActorEventMap } from '../entity/actors/Actor';
+import BoundingBox from '../collision/BoundingBox';
 
 export interface IRingBombProps {
     radius?: number,
@@ -28,16 +29,12 @@ export default class Bomb extends Weapon {
     public constructor(context: GameContext, props?: IRingBombProps) {
         super(context);
 
-        this.radius = props?.radius ?? 5;
+        this.radius = props?.radius ?? 3;
         this.delay = props?.delay ?? 2000;
-        this.propagationDelay = props?.propagationDelay ?? 500;
+        this.propagationDelay = props?.propagationDelay ?? 100;
     }
 
-    public spawnAt(target: BoardCell, owner: Actor): void {
-        this.onSpawn(target, owner);
-    }
-
-    private async onSpawn(cell: BoardCell, owner: Actor) {
+    public async spawnAt(target: BoardCell, owner: Actor): Promise<void> {
         const { app, board, cellSize, ticker, actors } = this.context;
         const { stage } = app;
 
@@ -45,7 +42,7 @@ export default class Bomb extends Weapon {
         const bombSprite = Sprite.from(Resources.BOMB_TEXTURE);
         bombSprite.width = cellSize;
         bombSprite.height = cellSize;
-        cell.alignObject(bombSprite);
+        target.alignObject(bombSprite);
 
         stage.addChild(bombSprite);
         await sleep(this.delay);
@@ -54,8 +51,8 @@ export default class Bomb extends Weapon {
         // After explosion
         const addedRenderables: DisplayObject[] = [];
         const shockWaveFilter = new ShockwaveFilter([
-            (cell.col + 0.5) * cellSize,
-            (cell.row + 0.5) * cellSize
+            (target.col + 0.5) * cellSize,
+            (target.row + 0.5) * cellSize
         ], {
             radius: 200,
             amplitude: 20,
@@ -77,11 +74,11 @@ export default class Bomb extends Weapon {
         });
         explosionSound.play();
 
-        const cx0 = cell.bbox.cx;
-        const cy0 = cell.bbox.cy;
+        const cx0 = target.bbox.cx;
+        const cy0 = target.bbox.cy;
 
         for (let i = 0; i < this.radius; i++) {
-            const ring = BresenhamCircle.getOutline(cell.col, cell.row, i + 1);
+            const ring = BresenhamCircle.getOutline(target.col, target.row, i + 1);
             ring.forEach(([col, row]) => {
                 const cell = board.getCellAt(col, row);
 
@@ -97,22 +94,24 @@ export default class Bomb extends Weapon {
                     cell.setAsDefault();
                 }
 
-                const sprite = new ExplosionSprite(cellSize);
-                cell.alignObject(sprite);
+                const explosionSprite = new ExplosionSprite(cellSize);
+                cell.alignObject(explosionSprite);
 
-                stage.addChild(sprite);
-                addedRenderables.push(sprite);
+                stage.addChild(explosionSprite);
+                addedRenderables.push(explosionSprite);
+
+                const { x, y, width, height } = explosionSprite;
+                const spriteBbox = BoundingBox.fromDims(x, y, width, height);
+
+                actors.forEach(actor => {
+                    const [f1, f2] = actor.bbox.getIntersection(spriteBbox);
+                    if (f1 > 0.01 && f2 > 0.01) {
+                        actor.health -= 20;
+                    }
+                });
             });
 
             const rSq = (this.radius * cellSize) ** 2;
-
-            actors.forEach(actor => {
-                const {cx, cy} = actor.bbox;
-
-                if ((cx - cx0) ** 2 + (cy - cy0) ** 2 <= rSq) {
-                    actor.health -= 20;
-                }
-            });
 
             await sleep(this.propagationDelay);
         }
@@ -123,5 +122,5 @@ export default class Bomb extends Weapon {
         ticker.remove(updateShockWave);
         stage.filters.splice(stage.filters.indexOf(shockWaveFilter), 1);
     }
-
+    
 }

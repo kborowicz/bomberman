@@ -1,6 +1,7 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { Container, DisplayObject, Sprite } from 'pixi.js';
 import { BoardCell } from '../board/BoardCell';
+import BoundingBox from '../collision/BoundingBox';
 import Actor from '../entity/actors/Actor';
 import Resources from '../Resources';
 import sleep from '../utils/sleep';
@@ -13,11 +14,7 @@ export interface IDynamiteProps {
 
 export default class Dynamite extends Weapon {
 
-    public spawnAt(target: BoardCell, owner: Actor): void {
-        this.onSpawn(target, owner);
-    }
-
-    private async onSpawn(target: BoardCell, owner: Actor) {
+    public async spawnAt(target: BoardCell, owner: Actor) {
         const { app, board, cellSize, ticker, actors } = this.context;
         const { stage } = app;
 
@@ -71,8 +68,12 @@ export default class Dynamite extends Weapon {
                     cell.alignObject(explosionSprite);
                     stage.addChild(explosionSprite);
 
+                    const { x, y, width, height } = explosionSprite;
+                    const spriteBbox = BoundingBox.fromDims(x, y, width, height);
+
                     actors.forEach(actor => {
-                        if (cell.hash == actor.nearestCell.hash) {
+                        const [f1, f2] = actor.bbox.getIntersection(spriteBbox);
+                        if (f1 > 0.01 && f2 > 0.01) {
                             actor.health -= 20;
                         }
                     });

@@ -9,7 +9,6 @@ import HealthBar from './HealtBar';
 export default class Player extends Actor {
 
     private _sprite: ActorSprite;
-    private healthBar: HealthBar;
 
     private isDownW = false;
     private isDownS = false;
@@ -22,9 +21,7 @@ export default class Player extends Actor {
         this._sprite = new ActorSprite(Resources.CHARACTER_1);
         this._sprite.width = this.context.cellSize;
         this._sprite.height = this.context.cellSize;
-
-        this.healthBar = new HealthBar(context.cellSize);
-        this._sprite.addChild(this.healthBar.renderable);
+        this.container.addChild(this._sprite);
 
         this.on('spawn', () => {
             this.addKeyObserver('w', isDown => this.isDownW = isDown);
@@ -59,14 +56,6 @@ export default class Player extends Actor {
         });
 
         this.on('idle', () => this._sprite.stop());
-
-        this.on('healthchange', health => {
-            this.healthBar.setPerc(health / 100);
-        });
-    }
-
-    public get renderable() {
-        return this._sprite;
     }
 
     private deployBomb() {

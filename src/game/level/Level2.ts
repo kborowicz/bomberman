@@ -4,7 +4,7 @@ import GameContext from '../GameContext';
 import BoardBuilder from './BoardBuilder';
 import { Level } from './Level';
 
-export default class Level1 implements Level {
+export default class Level2 implements Level {
 
     public getName(): string {
         return 'Level 1';

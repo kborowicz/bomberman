@@ -10,6 +10,6 @@ export default abstract class Weapon {
         this.context = context;
     }
 
-    public abstract spawnAt(target: BoardCell, owner: Actor): void;
+    public abstract spawnAt(target: BoardCell, owner: Actor): void | Promise<void>;
 
 }

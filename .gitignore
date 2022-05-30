@@ -5,3 +5,4 @@
 /release
 *.scss.d.ts
 /.vscode
+/dest

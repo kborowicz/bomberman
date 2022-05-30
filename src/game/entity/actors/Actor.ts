@@ -14,14 +14,24 @@ export interface ActorEventMap extends EntityEventMap {
 }
 
 export default abstract class Actor<
-    T extends Container = Container,
     E extends ActorEventMap = ActorEventMap
-    > extends Entity<T, E> {
+    > extends Entity<E> {
 
-    private prevCell: BoardCell;
+    protected currentCell: BoardCell;
+    protected healthBar: HealthBar;
 
     protected _speed = 4;
-    protected _health = 100;
+    protected _health = this.maxHealth;
+
+    public constructor(context: GameContext) {
+        super(context);
+        this.healthBar = new HealthBar(context.cellSize);
+        this.container.addChild(this.healthBar.renderable);
+
+        this.on('healthchange', health => {
+            this.healthBar.setHealth(health, this.maxHealth);
+        });
+    }
 
     public get speed(): number {
         return this._speed;
@@ -58,6 +68,10 @@ export default abstract class Actor<
             Math.floor(cx / cellSize),
             Math.floor(cy / cellSize)
         );
+    }
+
+    public get maxHealth() {
+        return 150;
     }
 
     public instantKill() {
@@ -97,9 +111,9 @@ export default abstract class Actor<
         const board = this.context.board;
         const bbox = this.bbox;
 
-        if (this.nearestCell != this.prevCell) {
-            this.emmiter.emit('cellchange', this.nearestCell, this.prevCell);
-            this.prevCell = this.nearestCell;
+        if (this.nearestCell != this.currentCell) {
+            this.emmiter.emit('cellchange', this.nearestCell, this.currentCell);
+            this.currentCell = this.nearestCell;
         }
 
         // TODO wspomaganie wejścia w wąskie korytarze
@@ -151,4 +165,5 @@ export default abstract class Actor<
         this.renderable.x += dx;
         this.renderable.y += dy;
     }
+
 }

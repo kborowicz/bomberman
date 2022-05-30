@@ -9,9 +9,8 @@ export interface EnemyEventMap extends ActorEventMap {
 }
 
 export default abstract class Enemy<
-    T extends Container = Container,
     E extends EnemyEventMap = EnemyEventMap
-> extends Actor<T, E> {
+> extends Actor<E> {
 
     protected currentMovement: Movement;
 

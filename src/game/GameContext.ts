@@ -7,21 +7,28 @@ import { IRenderable } from './IRenderable';
 export default class GameContext {
 
     public readonly app: Application;
-    public readonly board: Board;
 
-    public readonly player: Player;
-    private readonly _actors: Actor[] = [];
+    private _board: Board;
+    private _player: Player;
+    private _actors: Actor[] = [];
 
     public constructor() {
         this.app = new Application({
             backgroundColor: 0x3d3d3d
         });
 
-        this.board = new Board(this);
-        this.addObject(this.board);
+        this.reset();
+    }
 
-        this.player = new Player(this);
-        this._actors.push(this.player);
+    public reset() {
+        this.app.stage.removeChildren();
+        this._actors = [];
+
+        this._board = new Board(this);
+        this.addObject(this._board);
+
+        this._player = new Player(this);
+        this._actors.push(this._player);
     }
 
     public get ticker() {
@@ -29,7 +36,7 @@ export default class GameContext {
     }
 
     public get cellSize() {
-        return this.board.cellSize;
+        return this._board.cellSize;
     }
 
     public get stage() {
@@ -40,8 +47,16 @@ export default class GameContext {
         return this._actors;
     }
 
+    public get player() {
+        return this._player;
+    }
+
+    public get board() {
+        return this._board;
+    }
+
     public getCellAt(col: number, row: number) {
-        return this.board.getCellAt(col, row);
+        return this._board.getCellAt(col, row);
     }
 
     public addObject(object: IRenderable | DisplayObject) {
@@ -52,8 +67,8 @@ export default class GameContext {
         }
     }
 
-    public addActor(actor: Actor) {
-        this._actors.push(actor);
+    public addActors(...actors: Actor[]) {
+        this._actors.push(...actors);
     }
 
 }

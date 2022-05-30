@@ -10,16 +10,20 @@ export interface EntityEventMap {
 }
 
 export default abstract class Entity<
-    T extends Container = Container,
     E extends EntityEventMap = EntityEventMap
-    > implements IRenderable<T>, IEventEmitter<E>, IHasBoundingBox {
+> implements IRenderable, IEventEmitter<E>, IHasBoundingBox {
 
     public readonly context: GameContext;
     protected readonly emmiter: EventEmitter;
+    protected container: Container;
 
     public constructor(context: GameContext) {
         this.context = context;
         this.emmiter = new EventEmitter();
+        this.container = new Container();
+
+        this.container.width = context.cellSize;
+        this.container.height = context.cellSize;
     }
 
     public get bbox() {
@@ -35,6 +39,8 @@ export default abstract class Entity<
         this.emmiter.off(event + '', fn as any);
     }
 
-    public abstract get renderable(): T;
+    public get renderable() {
+        return this.container;
+    }
 
 }

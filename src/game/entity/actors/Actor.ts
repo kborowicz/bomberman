@@ -2,7 +2,7 @@ import { BoardCell } from '@/game/board/BoardCell';
 import GameContext from '@/game/GameContext';
 import { Container } from 'pixi.js';
 import Entity, { EntityEventMap } from '../Entity';
-import HealthBar from './HealtBar';
+import HealthBar from '../../sprite/HealthBar';
 
 export interface ActorEventMap extends EntityEventMap {
     'cellchange': (curr: BoardCell, prev: BoardCell) => void;

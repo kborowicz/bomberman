@@ -2,24 +2,17 @@ import FlashEnemy from '../entity/actors/enemies/FlashEnemy';
 import PlayerEnemy from '../entity/actors/enemies/PlayerEnemy';
 import GameContext from '../GameContext';
 import BoardBuilder from './BoardBuilder';
-import { Level } from './Level';
+import { ILevel } from './Level';
 
-export default class Level2 implements Level {
+export default class Level2 implements ILevel {
 
     public getName(): string {
-        return 'Level 1';
+        return 'Level 2';
     }
 
     public load(context: GameContext): void | Promise<void> {
-        const { app, board } = context;
-
         this.initBoard(context);
-
-        app.screen.width = board.renderable.width;
-        app.screen.height = board.renderable.height;
-
-        app.view.width = board.renderable.width;
-        app.view.height = board.renderable.height;
+        context.resize();
     }
 
     public start(context: GameContext) {
@@ -28,19 +21,28 @@ export default class Level2 implements Level {
         // const enemy1 = new PlayerEnemy(this.context);
         // enemy1.spawnAt(13, 13);
 
-        const enemy2 = new FlashEnemy(context);
-        enemy2.spawnAt(13, 13);
+        // const enemy2 = new FlashEnemy(context);
+        // enemy2.spawnAt(13, 13);
 
-        // const enemy3 = new FlashEnemy(this.context);
-        // enemy3.spawnAt(1, 13);
+        // // const enemy3 = new FlashEnemy(this.context);
+        // // enemy3.spawnAt(1, 13);
 
-        // const enemy4 = new FlashEnemy(this.context);
-        // enemy4.spawnAt(13, 1);
+        // // const enemy4 = new FlashEnemy(this.context);
+        // // enemy4.spawnAt(13, 1);
 
-        const enemy5 = new PlayerEnemy(context);
-        enemy5.spawnAt(13, 1);
+        // const enemy5 = new PlayerEnemy(context);
+        // enemy5.spawnAt(13, 1);
 
-        context.addActors(enemy2, enemy5);
+        for (let i = 0; i < 2; i++) {
+            const cell = context.board.getRandomNonWallCell();
+            const enemy = new FlashEnemy(context);
+            context.addActors(enemy);
+            enemy.spawnAt(cell);
+
+            console.log('i');
+        }
+
+        // context.addActors(enemy2, enemy5);
     }
 
     private initBoard(context: GameContext) {
@@ -65,21 +67,6 @@ export default class Level2 implements Level {
         builder.fillCell(1, 7, 'wall');
         builder.fillCell(7, 13, 'wall');
         builder.fillCell(13, 7, 'wall');
-
-        builder.fillVerticalLine(6, 5, 9, 'wall');
-        builder.fillVerticalLine(8, 5, 9, 'wall');
-
-        builder.fillHorizontalLine(6, 5, 9, 'wall');
-        builder.fillHorizontalLine(8, 5, 9, 'wall');
-
-        builder.fillVerticalLine(7, 5, 9, 'bricks');
-        builder.fillHorizontalLine(7, 5, 9, 'bricks');
-        builder.fillCell(7, 7, 'grass');
-
-        builder.fillCell(2, 2, 'bricks');
-        builder.fillCell(2, 12, 'bricks');
-        builder.fillCell(12, 2, 'bricks');
-        builder.fillCell(12, 12, 'bricks');
 
         builder.build();
     }

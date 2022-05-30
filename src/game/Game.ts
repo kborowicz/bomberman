@@ -1,6 +1,6 @@
 import { utils } from 'pixi.js';
 import GameContext from './GameContext';
-import { Level } from './level/Level';
+import { ILevel } from './level/Level';
 import Resources from './Resources';
 
 export default class Game {
@@ -8,32 +8,24 @@ export default class Game {
     private _context: GameContext;
     private root: HTMLElement;
 
-    public constructor(onInit: (context: Game) => void) {
+    public constructor() {
         utils.skipHello();
-        this.initialize().then(() => onInit(this));
     }
 
-    public get context(): GameContext {
-        return this._context;
+    public createContext() {
+        if (this._context) {
+            this._context.destroy();
+        }
+
+        const context = new GameContext();
+        this._context = context;
+        this.root.replaceChildren(context.app.view);
+
+        return context;
     }
 
-    public async loadLevel(level: Level) {
-        this._context.reset();
-        const {app, board} = this._context;
-        await level.load(this._context);
-
-        app.screen.width = board.renderable.width;
-        app.screen.height = board.renderable.height;
-
-        app.view.width = board.renderable.width;
-        app.view.height = board.renderable.height;
-    }
-
-    private async initialize() {
+    public async initialize() {
         await Resources.initialize();
-        this._context = new GameContext();
-
-        this.root = document.getElementById('root');
-        this.root.append(this._context.app.view);
+        this.root = document.getElementById('canvas-wrapper');
     }
 }

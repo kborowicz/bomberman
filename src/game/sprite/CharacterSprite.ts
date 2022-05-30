@@ -1,16 +1,21 @@
 import { AnimatedSprite, Spritesheet } from 'pixi.js';
+import CellSprite from './CellSprite';
 
 export type Direction = 'up' | 'down' | 'left' | 'right';
 
-export default class CharacterSprite extends AnimatedSprite {
+export default class CharacterSprite extends CellSprite {
 
     protected spritesheet: Spritesheet;
+    protected sprite: AnimatedSprite;
 
-    public constructor(spritesheet: Spritesheet) {
-        super(spritesheet.animations['down']);
+    public constructor(cellSize: number, spritesheet: Spritesheet) {
+        super(cellSize);
 
         this.spritesheet = spritesheet;
-        this.animationSpeed = 0.1;
+        this.sprite = new AnimatedSprite(spritesheet.animations['down']);
+        this.sprite.animationSpeed = 0.1;
+
+        this.addAndFill(this.sprite);
     }
 
     public setDirection(dx: number, dy: number) {
@@ -35,12 +40,20 @@ export default class CharacterSprite extends AnimatedSprite {
             case 'right': this.setAnimation('right'); break;
         }
     }
-    
+
+    public play() {
+        this.sprite.play();
+    }
+
+    public stop() {
+        this.sprite.stop();
+    }
+
     private setAnimation(direction: Direction) {
         const newAnimation = this.spritesheet.animations[direction];
 
-        if (this.textures != newAnimation) {
-            this.textures = newAnimation;
+        if (this.sprite.textures != newAnimation) {
+            this.sprite.textures = newAnimation;
         }
     }
 

@@ -25,8 +25,17 @@ export default class HealthBar implements IRenderable {
         this.outerBar.beginFill(0x000000);
         this.outerBar.drawRect(0, 0, this.size, 3);
 
-        this.outerBar.beginFill(0x00FF00);
-        this.outerBar.drawRect(0, 0, health / maxHealth * this.size, 3);
+        const scale = health / maxHealth;
+        this.outerBar.beginFill(this.getBarColor(scale));
+        this.outerBar.drawRect(0, 0, scale * this.size, 3);
+    }
+
+    private getBarColor(t: number) {
+        const r = 255 * (1 - t);
+        const g = 255 * t;
+        const b = 0;
+
+        return (r << 16) + (g << 8) + (b);
     }
 
 }

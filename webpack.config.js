@@ -1,6 +1,7 @@
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 const isProduction = process.env.NODE_ENV == 'production';
@@ -101,6 +102,11 @@ const config = {
             isBrowser: false,
             env: process.env.NODE_ENV,
             isDevelopment: !isProduction,
+        }),
+        new CopyPlugin({
+            patterns: [
+                path.resolve(__dirname, 'src/github-32.png')
+            ],
         })
     ],
     resolve: {

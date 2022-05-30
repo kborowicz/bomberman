@@ -1,22 +1,50 @@
 import Game from './game/Game';
-import { Level } from './game/level/Level';
+import { ILevel } from './game/level/Level';
 import Level1 from './game/level/Level1';
 import Level2 from './game/level/Level2';
 import './index.scss';
 
-class LevelListElement {
+class Overlay {
 
-    public readonly level: Level;
     public readonly dom: HTMLElement;
 
-    public constructor(level: Level) {
+    public constructor() {
+        this.dom = document.createElement('div');
+        this.dom.classList.add('overlay');
+    }
+
+    public showPlay(onPlayClick: () => void) {
+        const playTitleText = document.createElement('div');
+        playTitleText.append('Play');
+        playTitleText.classList.add('title');
+        playTitleText.addEventListener('click', onPlayClick);
+
+        this.dom.replaceChildren(playTitleText);
+    }
+
+    public showGameOver(onTryAgainClick: () => void) {
+        const tryAgainTitleText = document.createElement('div');
+        tryAgainTitleText.append('Try again');
+        tryAgainTitleText.classList.add('title');
+
+        this.dom.replaceChildren(tryAgainTitleText);
+    }
+
+}
+
+class LevelListElement {
+
+    public readonly level: ILevel;
+    public readonly dom: HTMLElement;
+
+    public constructor(level: ILevel) {
         this.level = level;
         this.dom = document.createElement('div');
         this.dom.append(level.getName());
         this.dom.classList.add('menu-item');
     }
 
-    public markAsActive(active: boolean) {
+    public set isActive(active: boolean) {
         if (active) {
             this.dom.classList.add('active');
         } else {
@@ -27,17 +55,36 @@ class LevelListElement {
 }
 
 (async () => {
-    const menuEl = document.getElementById('menu');
-    const levels: Level[] = [new Level1(), new Level2()];
+    const game = new Game();
+    await game.initialize();
 
-    const game = new Game(async (game) => {
-        levels.forEach(level => {
-            const listEl = new LevelListElement(level);
-            menuEl.append(listEl.dom);
+    const rootEl = document.getElementById('root');
+    const menuEl = document.getElementById('menu');
+    const overlay = new Overlay();
+
+    const levels = [new Level1(), new Level2()];
+    const levelListEls: LevelListElement[] = [];
+
+    levels.forEach(level => {
+        const listEl = new LevelListElement(level);
+        listEl.dom.addEventListener('click', () => {
+            levelListEls.forEach(el => el.isActive = false);
+            listEl.isActive = true;
+
+            const context = game.createContext();
+
+            listEl.level.load(context);
+            rootEl.append(overlay.dom);
+
+            overlay.showPlay(() => {
+                listEl.level.start(context);
+                overlay.dom.remove();
+            });
         });
 
-        await levels[0].load(game.context);
-        levels[0].start(game.context);
+        menuEl.append(listEl.dom);
+        levelListEls.push(listEl);
     });
 
+    levelListEls[0].dom.click();
 })();

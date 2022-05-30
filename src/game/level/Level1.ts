@@ -2,9 +2,9 @@ import FlashEnemy from '../entity/actors/enemies/FlashEnemy';
 import PlayerEnemy from '../entity/actors/enemies/PlayerEnemy';
 import GameContext from '../GameContext';
 import BoardBuilder from './BoardBuilder';
-import { Level } from './Level';
+import { ILevel } from './Level';
 
-export default class Level1 implements Level {
+export default class Level1 implements ILevel {
 
     public getName(): string {
         return 'Level 1';
@@ -14,12 +14,7 @@ export default class Level1 implements Level {
         const { app, board } = context;
 
         this.initBoard(context);
-
-        app.screen.width = board.renderable.width;
-        app.screen.height = board.renderable.height;
-
-        app.view.width = board.renderable.width;
-        app.view.height = board.renderable.height;
+        context.resize();
     }
 
     public start(context: GameContext) {
@@ -31,16 +26,16 @@ export default class Level1 implements Level {
         const enemy2 = new FlashEnemy(context);
         enemy2.spawnAt(13, 13);
 
-        // const enemy3 = new FlashEnemy(this.context);
-        // enemy3.spawnAt(1, 13);
+        const enemy3 = new FlashEnemy(context);
+        enemy3.spawnAt(1, 13);
 
         // const enemy4 = new FlashEnemy(this.context);
         // enemy4.spawnAt(13, 1);
 
-        const enemy5 = new PlayerEnemy(context);
-        enemy5.spawnAt(13, 1);
+        // const enemy5 = new PlayerEnemy(context);
+        // enemy5.spawnAt(13, 1);
 
-        context.addActors(enemy2, enemy5);
+        context.addActors(enemy2, enemy3);
     }
 
     private initBoard(context: GameContext) {

@@ -20,23 +20,91 @@ body {
     width: 100%;
     height: 100%;
     font-family: "Pixeboy";
-    color: rgb(218, 218, 218);
+    color: #dadada;
 
     > * {
         margin-top: 50px;
     }
 }
 
+kbd {
+    font-size: 20px;
+    font-family: "Pixeboy";
+    border: 1px solid #dadada;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+canvas {
+    vertical-align: bottom
+}
+
 :global {
+    #root {
+        position: relative;
+    }
+
     .main {
         display: flex;
         align-items: flex-start;
         flex-direction: row;
         gap: 20px;
+    }
 
-        #menu {
-            // background-color: red;
+    .overlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        .title {
+            font-size: 45px;
+            user-select: none;
+            cursor: pointer;
+            text-align: center;
+            background-color: #3d3d3d;
+            border: 1px solid #dadada;
+            min-width: 120px;
+
+            &:hover {
+                color: orange;
+            }
+        }
+    }
+
+    #menu {
+        font-size: 20px;
+
+        .title {
+            font-size: 45px;
+            line-height: 32px;
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+
+            .github-logo {
+                width: 23px;
+                height: 23px;
+                image-rendering: pixelated;
+                cursor: pointer;
+            }
+        }
+
+        .subtitle {
+            color: #747474;
             font-size: 20px;
+            margin-bottom: 20px;;
+        }
+
+        .controls {
+            margin: 20px 0;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #747474;
         }
 
         .menu-item {

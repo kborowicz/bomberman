@@ -4,8 +4,9 @@ import Bomb from '@/game/weapons/Bomb';
 import { Container, Sprite } from 'pixi.js';
 import Resources from '../../../Resources';
 import Actor from '../Actor';
-import ActorSprite from '../ActorSprite';
+import ActorSprite from '../../../sprite/CharacterSprite';
 import Enemy from './Enemy';
+import CharacterSprite from '../../../sprite/CharacterSprite';
 
 export default class PlayerEnemy extends Enemy {
 
@@ -14,9 +15,7 @@ export default class PlayerEnemy extends Enemy {
 
     public constructor(context: GameContext) {
         super(context);
-        this.sprite = new ActorSprite(Resources.CHARACTER_1);
-        this.sprite.width = this.context.cellSize;
-        this.sprite.height = this.context.cellSize;
+        this.sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_1);
         this.container.addChild(this.sprite);
 
         this.on('spawn', () => {

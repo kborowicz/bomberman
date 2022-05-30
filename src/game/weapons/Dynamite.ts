@@ -5,8 +5,9 @@ import BoundingBox from '../collision/BoundingBox';
 import Actor from '../entity/actors/Actor';
 import Resources from '../Resources';
 import sleep from '../utils/sleep';
-import ExplosionSprite from './ExplosionSprite';
+import ExplosionSprite from '../sprite/ExplosionSprite';
 import Weapon from './Weapon';
+import WeaponSprite from '../sprite/WeaponSprite';
 
 export interface IDynamiteProps {
 
@@ -19,14 +20,21 @@ export default class Dynamite extends Weapon {
         const { stage } = app;
 
         // Before explosion
+        const dynamiteSprtiee = new WeaponSprite(cellSize);
+        dynamiteSprtiee.addAndFill(Sprite.from(Resources.DYNAMITE_TEXTURE));
+        dynamiteSprtiee.align(target);
+        // dynamiteSprtiee.timerValue = 5;
+
         const dynamiteSprite = Sprite.from(Resources.DYNAMITE_TEXTURE);
         dynamiteSprite.width = cellSize;
         dynamiteSprite.height = cellSize;
         target.alignObject(dynamiteSprite);
 
-        stage.addChild(dynamiteSprite);
+        // stage.addChild(dynamiteSprite);
+        stage.addChild(dynamiteSprtiee);
         await sleep(2000);
-        dynamiteSprite.destroy();
+        // dynamiteSprite.destroy();
+        dynamiteSprtiee.destroy();
 
         // After explosion
         const addedRenderables: DisplayObject[] = [];
@@ -102,7 +110,7 @@ export default class Dynamite extends Weapon {
         }
 
         await sleep(500);
-        
+
         addedRenderables.forEach(r => r.destroy());
         ticker.remove(updateShockWave);
         stage.filters.splice(stage.filters.indexOf(shockWaveFilter), 1);

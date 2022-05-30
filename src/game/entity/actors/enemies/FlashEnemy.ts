@@ -6,7 +6,8 @@ import Dynamite from '@/game/weapons/Dynamite';
 import { AdvancedBloomFilter } from '@pixi/filter-advanced-bloom';
 import { MotionBlurFilter } from '@pixi/filter-motion-blur';
 import { Container, Point, Sprite } from 'pixi.js';
-import ActorSprite from '../ActorSprite';
+import CharacterSprite from '../../../sprite/CharacterSprite';
+import ActorSprite from '../../../sprite/CharacterSprite';
 import Enemy from './Enemy';
 
 export default class FlashEnemy extends Enemy {
@@ -15,7 +16,7 @@ export default class FlashEnemy extends Enemy {
 
     public constructor(context: GameContext) {
         super(context);
-        this.sprite = new ActorSprite(Resources.CHARACTER_2);
+        this.sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_2);
         this.sprite.width = this.context.cellSize;
         this.sprite.height = this.context.cellSize;
         this.container.addChild(this.sprite);
@@ -28,9 +29,13 @@ export default class FlashEnemy extends Enemy {
 
         this.on('spawn', () => {
             const startNewMove = async () => {
+                if (!this.isAlive || context.isDestroyed) {
+                    return;
+                }
+
                 this.sprite.direction = 'down';
                 this.sprite.play();
-                
+
                 motionBlurFilter.velocity = new Point(0, 0);
                 await sleep(Math.random() * (1500 - 500) + 500);
 
@@ -48,6 +53,10 @@ export default class FlashEnemy extends Enemy {
             startNewMove();
 
             const deployBomb = async () => {
+                if (!this.isAlive) {
+                    return;
+                }
+
                 await sleep(Math.random() * (3000 - 2500) + 2500);
                 // const bomb = new Bomb(this.context);
                 // bomb.spawnAt(this.nearestCell, this);

@@ -7,6 +7,7 @@ import { IRenderable } from './IRenderable';
 export default class GameContext {
 
     public readonly app: Application;
+    private _isDestroyed = false;
 
     private _board: Board;
     private _player: Player;
@@ -29,6 +30,10 @@ export default class GameContext {
 
         this._player = new Player(this);
         this._actors.push(this._player);
+    }
+
+    public get isDestroyed() {
+        return this._isDestroyed;
     }
 
     public get ticker() {
@@ -69,6 +74,28 @@ export default class GameContext {
 
     public addActors(...actors: Actor[]) {
         this._actors.push(...actors);
+    }
+
+    public resize() {
+        const { app, board } = this;
+
+        app.screen.width = board.renderable.width;
+        app.screen.height = board.renderable.height;
+
+        app.view.width = board.renderable.width;
+        app.view.height = board.renderable.height;
+    }
+
+    public start() {
+        this.ticker.start();
+    }
+
+    public stop() {
+        this.ticker.stop();
+    }
+
+    public destroy() {
+        this._isDestroyed = true;
     }
 
 }

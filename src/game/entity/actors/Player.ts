@@ -3,8 +3,9 @@ import Dynamite from '@/game/weapons/Dynamite';
 import { Sprite } from 'pixi.js';
 import Resources from '../../Resources';
 import Actor from './Actor';
-import ActorSprite from './ActorSprite';
-import HealthBar from './HealtBar';
+import ActorSprite from '../../sprite/CharacterSprite';
+import HealthBar from '../../sprite/HealthBar';
+import CharacterSprite from '../../sprite/CharacterSprite';
 
 export default class Player extends Actor {
 
@@ -18,7 +19,7 @@ export default class Player extends Actor {
     public constructor(context: GameContext) {
         super(context);
 
-        this._sprite = new ActorSprite(Resources.CHARACTER_1);
+        this._sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_1);
         this._sprite.width = this.context.cellSize;
         this._sprite.height = this.context.cellSize;
         this.container.addChild(this._sprite);

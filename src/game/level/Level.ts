@@ -1,6 +1,6 @@
 import GameContext from '../GameContext';
 
-export interface Level {
+export interface ILevel {
 
     getName(): string;
     load(context: GameContext): void | Promise<void>;

@@ -10,7 +10,7 @@ import sleep from '../utils/sleep';
 
 import explosionSoundSrc from '../assets/explosion/explosion.mp3';
 import { Howl, Howler } from 'howler';
-import ExplosionSprite from './ExplosionSprite';
+import ExplosionSprite from '../sprite/ExplosionSprite';
 import Actor, { ActorEventMap } from '../entity/actors/Actor';
 import BoundingBox from '../collision/BoundingBox';
 

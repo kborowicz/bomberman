@@ -69,9 +69,9 @@ export default class Dynamite extends Weapon {
 
         const explosionSound = new Howl({
             src: [timeBombSoundSrc],
-            volume: 0.5
+            volume: 0.5,
+            autoplay: true
         });
-        explosionSound.play();
 
         const actorsSpeed: [Actor, number][] = [];
 

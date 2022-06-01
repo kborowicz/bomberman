@@ -2,6 +2,7 @@ import { BoardCell } from '@/game/board/BoardCell';
 import GameContext from '@/game/GameContext';
 import CharacterSprite from '@/game/sprite/CharacterSprite';
 import Bomb from '@/game/weapons/Bomb';
+import TimeBomb from '@/game/weapons/TimeBomb';
 import { OutlineFilter } from '@pixi/filter-outline';
 import Resources from '../../../Resources';
 import Actor from '../Actor';
@@ -38,7 +39,7 @@ export default class PlayerEnemy extends Enemy {
         // if (actor.nearestCell != this.prevTargetCell) {
         const movement = this.goTo(actor.nearestCell);
         movement.on('finish', () => {
-            const bomb = new Bomb(this.context);
+            const bomb = new TimeBomb(this.context);
             bomb.spawnAt(this.nearestCell, this);
         });
 

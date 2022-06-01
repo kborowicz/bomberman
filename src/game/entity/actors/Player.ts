@@ -37,18 +37,84 @@ export default class Player extends Actor {
                 }
             });
 
-            this.context.app.ticker.add(dt => {
+            const { ticker } = context;
+
+            ticker.add(dt => {
                 const movementDelta = dt * this.speed;
 
                 let dx = (+this.isDownA * (-1) + +this.isDownD * (+1)) * movementDelta;
                 let dy = (+this.isDownW * (-1) + +this.isDownS * (+1)) * movementDelta;
 
-                if (dx != 0 && dy != 0) {
-                    dx = Math.sign(dx) * movementDelta / Math.sqrt(2);
-                    dy = Math.sign(dy) * movementDelta / Math.sqrt(2);
+                if (dx == 0 && dy == 0) {
+                    this.emmiter.emit('idle');
+                    return;
                 }
 
-                this.move(dx, dy);
+                const dirx = Math.sign(dx);
+                const diry = Math.sign(dy);
+
+                if (dx != 0 && dy != 0) {
+                    dx = dirx * movementDelta / Math.sqrt(2);
+                    dy = diry * movementDelta / Math.sqrt(2);
+                }
+
+                const collision = this.move(dx, dy);
+
+                if (!collision || dx != 0 && dy != 0) {
+                    return;
+                }
+
+                if (dx != 0) {
+                    const c0 = this.nearestCell;
+                    const b0 = this.bbox;
+                    const b1 = this.nearestCell.bbox;
+
+                    if (dx < 0 && c0.wCell.isWall || dx > 0 && c0.eCell.isWall) {
+                        return;
+                    }
+
+                    // const kn = b0.getIntersection(c0.nCell.bbox)[1] / cellSize;
+                    // const ks = b0.getIntersection(c0.sCell.bbox)[1] / cellSize;
+
+                    // if (kn >= 0.2 || ks >= 0.2) {
+                    //     return;
+                    // }
+
+                    const y0 = b0.cy;
+                    const y1 = b1.cy;
+                    const dy = y1 - y0;
+
+                    if (Math.abs(movementDelta) > Math.abs(dy)) {
+                        this.move(0, dy);
+                    } else {
+                        this.move(0, Math.sign(dy) * movementDelta);
+                    }
+                } else {
+                    const c0 = this.nearestCell;
+                    const b0 = this.bbox;
+                    const b1 = this.nearestCell.bbox;
+
+                    if (dy < 0 && c0.nCell.isWall || dy > 0 && c0.sCell.isWall) {
+                        return;
+                    }
+
+                    // const kn = b0.getIntersection(c0.nCell.bbox)[1] / cellSize;
+                    // const ks = b0.getIntersection(c0.sCell.bbox)[1] / cellSize;
+
+                    // if (kn >= 0.2 || ks >= 0.2) {
+                    //     return;
+                    // }
+
+                    const x0 = b0.cx;
+                    const x1 = b1.cx;
+                    const dx = x1 - x0;
+
+                    if (Math.abs(movementDelta) > Math.abs(dx)) {
+                        this.move(dx, 0);
+                    } else {
+                        this.move(Math.sign(dx) * movementDelta, 0);
+                    }
+                }
             });
         });
 
@@ -57,11 +123,13 @@ export default class Player extends Actor {
             this.sprite.play();
         });
 
-        this.on('idle', () => this.sprite.stop());
+        this.on('idle', () => {
+            this.sprite.stop();
+        });
     }
 
     private deployBomb() {
-        const dynamite = new TimeBomb(this.context);
+        const dynamite = new Dynamite(this.context);
         dynamite.spawnAt(this.nearestCell, this);
     }
 

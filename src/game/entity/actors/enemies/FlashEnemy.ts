@@ -5,8 +5,10 @@ import TombstoneSprite from '@/game/sprite/TombstoneSprite';
 import sleep from '@/game/utils/sleep';
 import Dynamite from '@/game/weapons/Dynamite';
 import { MotionBlurFilter } from '@pixi/filter-motion-blur';
+import { Howl } from 'howler';
 import { Point } from 'pixi.js';
 import Enemy from './Enemy';
+import zapSoundSrc from '@/game/assets/zap.mp3';
 
 export default class FlashEnemy extends Enemy {
 
@@ -23,6 +25,12 @@ export default class FlashEnemy extends Enemy {
         this.sprite.filters = [motionBlurFilter];
         this.speed = 6;
 
+        const zapSound = new Howl({
+            src: [zapSoundSrc],
+            volume: 0.1,
+            html5: true
+        });
+
         this.on('spawn', () => {
             const startNewMove = async () => {
                 if (!this.isAlive || context.isDestroyed) {
@@ -33,7 +41,8 @@ export default class FlashEnemy extends Enemy {
                 this.sprite.play();
 
                 motionBlurFilter.velocity = new Point(0, 0);
-                await sleep(Math.random() * (1500 - 500) + 500);
+                await sleep(500, 1500);
+                zapSound.play();
 
                 const randomCell = this.context.board.getRandomNonWallCell();
                 const movement = this.goTo(randomCell, false);
@@ -58,7 +67,7 @@ export default class FlashEnemy extends Enemy {
                     return;
                 }
 
-                await sleep(Math.random() * (3000 - 2500) + 2500);
+                await sleep(2500, 3000);
 
                 const dynamite = new Dynamite(this.context);
                 dynamite.spawnAt(this.nearestCell, this);

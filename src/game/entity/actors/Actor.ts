@@ -24,7 +24,8 @@ export default abstract class Actor<
     protected healthBar: HealthBar;
 
     protected _speed = 4;
-    protected _health = this.maxHealth;
+    protected _maxHealth = 150;
+    protected _health = this._maxHealth;
     protected _isMoving = false;
 
     public constructor(context: GameContext) {
@@ -86,7 +87,7 @@ export default abstract class Actor<
     }
 
     public get maxHealth() {
-        return 150;
+        return this._maxHealth;
     }
 
     public instantKill() {
@@ -125,18 +126,18 @@ export default abstract class Actor<
     public move(dx: number, dy: number) {
         const board = this.context.board;
         const bbox = this.bbox;
+        let collision = false;
 
         if (this.nearestCell != this.currentCell) {
             this.emmiter.emit('cellchange', this.nearestCell, this.currentCell);
             this.currentCell = this.nearestCell;
         }
 
-        // TODO wspomaganie wejścia w wąskie korytarze
-
         if (dx != 0) {
             const shiftedBbox = bbox.shiftX(dx);
 
             if (board.testCollision(shiftedBbox)) {
+                collision = true;
                 let x0: number;
                 let x1: number;
 
@@ -156,6 +157,7 @@ export default abstract class Actor<
             const shiftedBbox = bbox.shiftY(dy);
 
             if (board.testCollision(shiftedBbox)) {
+                collision = true;
                 let y0: number;
                 let y1: number;
 
@@ -172,6 +174,9 @@ export default abstract class Actor<
         }
 
         if (dx != 0 || dy != 0) {
+            this.renderable.x += dx;
+            this.renderable.y += dy;
+
             this._isMoving = true;
             this.emmiter.emit('move', dx, dy);
         } else {
@@ -179,8 +184,7 @@ export default abstract class Actor<
             this.emmiter.emit('idle');
         }
 
-        this.renderable.x += dx;
-        this.renderable.y += dy;
+        return collision;
     }
 
 }

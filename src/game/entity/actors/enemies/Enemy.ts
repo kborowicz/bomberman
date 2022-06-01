@@ -32,7 +32,11 @@ export default abstract class Enemy<
 
         const newMovement = new Movement(this, srcCell, destCell);
         newMovement.on('change', (dx, dy) => this.emmiter.emit('movement-change', dx, dy));
-        newMovement.on('finish', () => this.emmiter.emit('movement-finish'));
+        newMovement.on('finish', () => {
+            this._isMoving = false;
+            this.emmiter.emit('movement-finish');
+            this.emmiter.emit('idle');
+        });
 
         if (arg3) {
             newMovement.start();

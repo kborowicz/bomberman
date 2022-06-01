@@ -21,7 +21,7 @@ export default class Level1 implements ILevel {
     public start(context: GameContext) {
         context.player.spawnAt(1, 1);
 
-        const enemy1 = new FlashEnemy(context);
+        const enemy1 = new ThrowerEnemy(context);
         enemy1.spawnAt(13, 13);
 
         const enemy2 = new ThrowerEnemy(context);
@@ -30,7 +30,11 @@ export default class Level1 implements ILevel {
         const enemy3 = new ThrowerEnemy(context);
         enemy3.spawnAt(13, 1);
 
-        context.addActors(enemy1, enemy2, enemy3);
+        const enemy4 = new PlayerEnemy(context);
+        enemy4.spawnAt(7, 7);
+
+        context.addActors(enemy1, enemy2, enemy3, enemy4);
+        context.backgroundMusic.play();
     }
 
     private initBoard(context: GameContext) {

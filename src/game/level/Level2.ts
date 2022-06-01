@@ -31,16 +31,20 @@ export default class Level2 implements ILevel {
         // // const enemy4 = new FlashEnemy(this.context);
         // // enemy4.spawnAt(13, 1);
 
+
+
         const enemy5 = new ThrowerEnemy(context);
         enemy5.spawnAt(13, 1);
         context.addActors(enemy5);
 
-        // for (let i = 0; i < 6; i++) {
-        //     const cell = context.board.getRandomNonWallCell();
-        //     const enemy = new FlashEnemy(context);
-        //     context.addActors(enemy);
-        //     enemy.spawnAt(cell);
-        // }
+        for (let i = 0; i < 6; i++) {
+            const cell = context.board.getRandomNonWallCell();
+            const enemy = new FlashEnemy(context);
+            context.addActors(enemy);
+            enemy.spawnAt(cell);
+        }
+
+        context.backgroundMusic.play();
     }
 
     private initBoard(context: GameContext) {

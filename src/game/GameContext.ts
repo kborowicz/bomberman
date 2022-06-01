@@ -1,8 +1,10 @@
+import { Howl } from 'howler';
 import { Application, DisplayObject } from 'pixi.js';
 import Board from './board/Board';
 import Actor from './entity/actors/Actor';
 import Player from './entity/actors/Player';
 import { IRenderable } from './IRenderable';
+import bgMusicSrc from '@/game/assets/background_music.mp3';
 
 export default class GameContext {
 
@@ -12,6 +14,12 @@ export default class GameContext {
     private _board: Board;
     private _player: Player;
     private _actors: Actor[] = [];
+
+    public readonly backgroundMusic = new Howl({
+        src: [bgMusicSrc],
+        volume: 0.3,
+        loop: true
+    });
 
     public constructor() {
         this.app = new Application({
@@ -96,6 +104,7 @@ export default class GameContext {
 
     public destroy() {
         this._isDestroyed = true;
+        this.backgroundMusic.stop();
     }
 
 }

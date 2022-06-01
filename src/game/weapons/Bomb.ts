@@ -80,9 +80,9 @@ export default class Bomb extends Weapon {
 
         const explosionSound = new Howl({
             src: [bombSoundSrc],
-            volume: 0.1
+            volume: 0.1,
+            autoplay: true
         });
-        explosionSound.play();
 
         const cx0 = target.bbox.cx;
         const cy0 = target.bbox.cy;

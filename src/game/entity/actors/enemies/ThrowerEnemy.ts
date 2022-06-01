@@ -17,11 +17,12 @@ export default class ThrowerEnemy extends Enemy {
         this.sprite.filters = [new OutlineFilter(1)];
         this.container.addChild(this.sprite);
 
-        this.speed = 3;
+        this.speed = 2.5;
+        this._maxHealth = 200;
 
         this.on('spawn', () => {
             const runIfPlayerIsNearby = async () => {
-                if (!this.isAlive) {
+                if (!this.isAlive || context.isDestroyed) {
                     return;
                 }
 
@@ -37,7 +38,7 @@ export default class ThrowerEnemy extends Enemy {
 
                     movement.on('finish', () => runIfPlayerIsNearby());
                     movement.on('change', () => {
-                        if (!this.isAlive) {
+                        if (!this.isAlive || context.isDestroyed) {
                             movement.cancel();
                         }
                     });
@@ -50,23 +51,31 @@ export default class ThrowerEnemy extends Enemy {
             runIfPlayerIsNearby();
 
             const throwBomb = async () => {
-                if (!this.isAlive) {
+                if (!this.isAlive || context.isDestroyed) {
                     return;
                 }
 
-                await sleep(2500);
-                this.throwBombAt(context.player.nearestCell);
-                await sleep(1500);
+                await sleep(1500, 3000);
+
+                if (!this.isMoving) {
+                    this.throwBombAt(context.player.nearestCell);
+                    await sleep(500);
+                }
+
                 throwBomb();
             };
 
             throwBomb();
         });
 
-        this.on('move', (dx, dy) => this.sprite.setDirection(dx, dy));
+        this.on('move', (dx, dy) => {
+            this.sprite.setDirection(dx, dy);
+            this.sprite.play();
+        });
+
         this.on('idle', () => {
-            this.sprite.stop();
             this.sprite.direction = 'down';
+            this.sprite.stop();
         });
     }
 

@@ -61,9 +61,9 @@ export default class Dynamite extends Weapon {
 
         const explosionSound = new Howl({
             src: [dynamiteSoundSrc],
-            volume: 0.3
+            volume: 0.3,
+            autoplay: true
         });
-        explosionSound.play();
 
         const { col: c0, row: r0 } = target;
 

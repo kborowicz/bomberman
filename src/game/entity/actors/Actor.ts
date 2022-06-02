@@ -3,6 +3,7 @@ import GameContext from '@/game/GameContext';
 import { Container } from 'pixi.js';
 import Entity, { EntityEventMap } from '../Entity';
 import HealthBar from '../../sprite/HealthBar';
+import PowerUpBlock from '@/game/powerups/PowerUpBlock';
 
 export interface ActorEventMap extends EntityEventMap {
     'cellchange': (curr: BoardCell, prev: BoardCell) => void;
@@ -131,6 +132,10 @@ export default abstract class Actor<
         if (this.nearestCell != this.currentCell) {
             this.emmiter.emit('cellchange', this.nearestCell, this.currentCell);
             this.currentCell = this.nearestCell;
+
+            if (this.currentCell.block instanceof PowerUpBlock) {
+                this.currentCell.block.onCollect(this, this.currentCell);
+            }
         }
 
         if (dx != 0) {

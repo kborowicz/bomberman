@@ -1,6 +1,8 @@
 import FlashEnemy from '../entity/actors/enemies/FlashEnemy';
 import PlayerEnemy from '../entity/actors/enemies/PlayerEnemy';
 import GameContext from '../GameContext';
+import HealthPowerUp from '../powerups/HealthPowerUp';
+import SpeedPowerUp from '../powerups/SpeedPowerUp';
 import BoardBuilder from './BoardBuilder';
 import { ILevel } from './Level';
 
@@ -36,6 +38,8 @@ export default class Level1 implements ILevel {
         // enemy5.spawnAt(13, 1);
 
         // context.addActors(enemy2, enemy3);
+
+        context.board.getCellAt(2, 2).block = new SpeedPowerUp(context);
 
         context.backgroundMusic.play();
     }

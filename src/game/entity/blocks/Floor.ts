@@ -4,7 +4,7 @@ import Block from './Block';
 
 export default class Floor extends Block {
 
-    private sprite = Sprite.from(Resources.GRASS_TEXTURE);
+    protected sprite: Container = Sprite.from(Resources.GRASS_TEXTURE);
 
     public get isWall(): boolean {
         return false;

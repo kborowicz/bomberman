@@ -66,7 +66,7 @@ export default class Dynamite extends Weapon {
 
         ticker.add(updateFilters);
 
-        const explosionSound = new Howl({
+        new Howl({
             src: [timeBombSoundSrc],
             volume: 0.5,
             autoplay: true

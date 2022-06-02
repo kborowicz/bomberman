@@ -78,7 +78,7 @@ export default class Bomb extends Weapon {
         const updateShockWave = () => shockWaveFilter.time += 0.01;
         ticker.add(updateShockWave);
 
-        const explosionSound = new Howl({
+        new Howl({
             src: [bombSoundSrc],
             volume: 0.1,
             autoplay: true

@@ -68,13 +68,13 @@ class LevelListElement {
 
     levels.forEach(level => {
         const listEl = new LevelListElement(level);
-        listEl.dom.addEventListener('click', () => {
+        listEl.dom.addEventListener('click', async () => {
             levelListEls.forEach(el => el.isActive = false);
             listEl.isActive = true;
 
             const context = game.createContext();
 
-            listEl.level.load(context);
+            await listEl.level.load(context);
             rootEl.append(overlay.dom);
 
             overlay.showPlay(() => {

@@ -73,13 +73,6 @@ export default class Player extends Actor {
                         return;
                     }
 
-                    // const kn = b0.getIntersection(c0.nCell.bbox)[1] / cellSize;
-                    // const ks = b0.getIntersection(c0.sCell.bbox)[1] / cellSize;
-
-                    // if (kn >= 0.2 || ks >= 0.2) {
-                    //     return;
-                    // }
-
                     const y0 = b0.cy;
                     const y1 = b1.cy;
                     const dy = y1 - y0;
@@ -97,13 +90,6 @@ export default class Player extends Actor {
                     if (dy < 0 && c0.nCell.isWall || dy > 0 && c0.sCell.isWall) {
                         return;
                     }
-
-                    // const kn = b0.getIntersection(c0.nCell.bbox)[1] / cellSize;
-                    // const ks = b0.getIntersection(c0.sCell.bbox)[1] / cellSize;
-
-                    // if (kn >= 0.2 || ks >= 0.2) {
-                    //     return;
-                    // }
 
                     const x0 = b0.cx;
                     const x1 = b1.cx;

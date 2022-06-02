@@ -1,7 +1,7 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { Howl } from 'howler';
 import { DisplayObject, Sprite } from 'pixi.js';
-import bombSoundSrc from '../assets/explosion/bomb.mp3';
+import bombSoundSrc from '../assets/sounds/bomb.mp3';
 import { BoardCell } from '../board/BoardCell';
 import BoundingBox from '../collision/BoundingBox';
 import Actor from '../entity/actors/Actor';

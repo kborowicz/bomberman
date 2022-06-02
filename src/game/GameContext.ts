@@ -4,7 +4,7 @@ import Board from './board/Board';
 import Actor from './entity/actors/Actor';
 import Player from './entity/actors/Player';
 import { IRenderable } from './IRenderable';
-import bgMusicSrc from '@/game/assets/background_music.mp3';
+import bgMusicSrc from '@/game/assets/sounds/background_music.mp3';
 
 export default class GameContext {
 

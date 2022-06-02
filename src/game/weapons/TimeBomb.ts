@@ -1,21 +1,20 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
-import { Sprite, filters } from 'pixi.js';
+import { Howl } from 'howler';
+import { filters, Sprite } from 'pixi.js';
+import timeBombSoundSrc from '../assets/sounds/time_bomb.mp3';
 import { BoardCell } from '../board/BoardCell';
 import Actor from '../entity/actors/Actor';
 import Resources from '../Resources';
 import WeaponSprite from '../sprite/WeaponSprite';
-import timeBombSoundSrc from '../assets/explosion/time_bomb.mp3';
 import sleep from '../utils/sleep';
 import Weapon from './Weapon';
-import { Howl } from 'howler';
-import { ColorOverlayFilter } from '@pixi/filter-color-overlay';
 
 export default class Dynamite extends Weapon {
 
     private delay = 2000;
 
     public async spawnAt(target: BoardCell, owner: Actor) {
-        const { app, board, cellSize, ticker, actors } = this.context;
+        const { app, cellSize, ticker, actors } = this.context;
         const { stage } = app;
 
         // Before explosion

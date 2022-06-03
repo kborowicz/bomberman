@@ -1,6 +1,6 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { Howl } from 'howler';
-import { DisplayObject, Sprite } from 'pixi.js';
+import { Container, DisplayObject, Sprite } from 'pixi.js';
 import dynamiteSoundSrc from '../assets/sounds/dynamite.mp3';
 import { BoardCell } from '../board/BoardCell';
 import BoundingBox from '../collision/BoundingBox';
@@ -17,9 +17,9 @@ export interface IDynamiteProps {
 
 export default class Dynamite extends Weapon {
 
-    private delay = 2000;
+    private delay = 1500;
 
-    public async spawnAt(target: BoardCell, owner: Actor) {
+    public async spawnAt(target: BoardCell, _: Actor) {
         const { app, board, cellSize, ticker, actors } = this.context;
         const { stage } = app;
 
@@ -61,7 +61,7 @@ export default class Dynamite extends Weapon {
 
         new Howl({
             src: [dynamiteSoundSrc],
-            volume: 0.3,
+            volume: 0.25,
             autoplay: true
         });
 
@@ -123,6 +123,11 @@ export default class Dynamite extends Weapon {
         addedRenderables.forEach(r => r.destroy());
         ticker.remove(updateShockWave);
         stage.filters.splice(stage.filters.indexOf(shockWaveFilter), 1);
+    }
+
+    public getRenderable(): Container {
+        return new WeaponSprite(this.context.cellSize)
+            .addAndFill(Sprite.from(Resources.DYNAMITE_TEXTURE));
     }
 
 }

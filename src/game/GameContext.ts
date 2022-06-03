@@ -5,15 +5,25 @@ import Actor from './entity/actors/Actor';
 import Player from './entity/actors/Player';
 import { IRenderable } from './IRenderable';
 import bgMusicSrc from '@/game/assets/sounds/background_music.mp3';
+import Enemy from './entity/actors/enemies/Enemy';
+import { IEventEmitter } from './IEventEmitter';
+import EventEmitter from 'eventemitter3';
 
-export default class GameContext {
+export interface GameContextEventMap {
+    'win': () => void;
+    'lose': () => void;
+}
 
-    public readonly app: Application;
+export default class GameContext implements IEventEmitter<GameContextEventMap> {
+
+    private readonly emitter = new EventEmitter();
     private _isDestroyed = false;
 
     private _board: Board;
     private _player: Player;
     private _actors: Actor[] = [];
+
+    public readonly app: Application;
 
     public readonly backgroundMusic = new Howl({
         src: [bgMusicSrc],
@@ -27,6 +37,22 @@ export default class GameContext {
         });
 
         this.reset();
+    }
+
+    public on<K extends keyof GameContextEventMap>(event: K, fn: GameContextEventMap[K]): void {
+        this.emitter.on(event + '', fn as any);
+    }
+    
+    public off<K extends keyof GameContextEventMap>(event: K, fn: GameContextEventMap[K]): void {
+        this.emitter.off(event + '', fn as any);
+    }
+
+    public playerWin() {
+        this.emitter.emit('win');
+    }
+
+    public playerLose() {
+        this.emitter.emit('lose');
     }
 
     public reset() {
@@ -60,6 +86,10 @@ export default class GameContext {
         return this._actors;
     }
 
+    public get enemies(): readonly Enemy[] {
+        return this._actors.filter(a => a instanceof Enemy) as Enemy[];
+    }
+
     public get player() {
         return this._player;
     }
@@ -82,6 +112,15 @@ export default class GameContext {
 
     public addActors(...actors: Actor[]) {
         this._actors.push(...actors);
+    }
+
+    public removeActors(...actors: Actor[]) {
+        actors.forEach(actor => {
+            const index = this._actors.indexOf(actor);
+            if (index) {
+                this._actors.splice(index, 1);
+            }
+        });
     }
 
     public resize() {

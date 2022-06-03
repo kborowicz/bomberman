@@ -6,10 +6,10 @@ import sleep from '../utils/sleep';
 import BoardBuilder from './BoardBuilder';
 import { ILevel } from './Level';
 
-export default class Level1 implements ILevel {
+export default class Level4 implements ILevel {
 
     public getName(): string {
-        return 'Level 1';
+        return 'Level 2';
     }
 
     public load(context: GameContext): void | Promise<void> {
@@ -20,26 +20,38 @@ export default class Level1 implements ILevel {
     public start(context: GameContext) {
         context.player.spawnAt(1, 1);
 
-        const t1 = new ThrowerEnemy(context);
-        t1.spawnAt(7, 7);
+        // const enemy1 = new PlayerEnemy(this.context);
+        // enemy1.spawnAt(13, 13);
 
-        const f1 = new FlashEnemy(context);
-        f1.spawnAt(2, 7);
+        // const enemy2 = new FlashEnemy(context);
+        // enemy2.spawnAt(13, 13);
 
-        const f2 = new FlashEnemy(context);
-        f2.spawnAt(12, 7);
+        // // const enemy3 = new FlashEnemy(this.context);
+        // // enemy3.spawnAt(1, 13);
 
-        context.addActors(t1, f1, f2);
+        // // const enemy4 = new FlashEnemy(this.context);
+        // // enemy4.spawnAt(13, 1);
+
+        const enemy5 = new ThrowerEnemy(context);
+        enemy5.spawnAt(13, 1);
+        context.addActors(enemy5);
+
+        for (let i = 0; i < 5; i++) {
+            const cell = context.board.getRandomNonWallCell();
+            const enemy = new FlashEnemy(context);
+            context.addActors(enemy);
+            enemy.spawnAt(cell);
+        }
 
         context.backgroundMusic.play();
 
         (async () => {
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 30; i++) {
                 if (context.isDestroyed) {
                     break;
                 }
 
-                await sleep(5000);
+                await sleep(1000);
                 const cell = context.board.getRandomNonWallCell();
                 const powerUp = PowerUpFactory.getRandom(context);
                 cell.block = powerUp;
@@ -69,21 +81,6 @@ export default class Level1 implements ILevel {
         builder.fillCell(1, 7, 'wall');
         builder.fillCell(7, 13, 'wall');
         builder.fillCell(13, 7, 'wall');
-
-        builder.fillVerticalLine(6, 5, 9, 'wall');
-        builder.fillVerticalLine(8, 5, 9, 'wall');
-
-        builder.fillHorizontalLine(6, 5, 9, 'wall');
-        builder.fillHorizontalLine(8, 5, 9, 'wall');
-
-        builder.fillVerticalLine(7, 5, 9, 'bricks');
-        builder.fillHorizontalLine(7, 5, 9, 'bricks');
-        builder.fillCell(7, 7, 'grass');
-
-        builder.fillCell(2, 2, 'bricks');
-        builder.fillCell(2, 12, 'bricks');
-        builder.fillCell(12, 2, 'bricks');
-        builder.fillCell(12, 12, 'bricks');
 
         builder.build();
     }

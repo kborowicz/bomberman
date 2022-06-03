@@ -18,6 +18,7 @@ import woodImg from './assets/player.png';
 import stoneImg from './assets/stone.png';
 import brickImg from './assets/bricks.png';
 import dynamiteImg from './assets/dynamite.png';
+import timebombImg from './assets/timebomb.png';
 import bombImg from './assets/bomb.png';
 import tombstoneImg from './assets/tombstone.png';
 import { loadSpritesheet, loadTexture } from './loader/AssetsLoader';
@@ -30,6 +31,7 @@ export default class Resources {
     public static STONE_TEXTURE: Texture;
     public static BRICK_TEXTURE: Texture;
     public static DYNAMITE_TEXTURE: Texture;
+    public static TIMEBOMB_TEXTURE: Texture;
     public static BOMB_TEXTURE: Texture;
     public static TOMBSTONE_TEXTURE: Texture;
 
@@ -45,6 +47,7 @@ export default class Resources {
         this.STONE_TEXTURE = loadTexture(stoneImg);
         this.BRICK_TEXTURE = loadTexture(brickImg);
         this.DYNAMITE_TEXTURE = loadTexture(dynamiteImg);
+        this.TIMEBOMB_TEXTURE = loadTexture(timebombImg);
         this.BOMB_TEXTURE = loadTexture(bombImg);
         this.TOMBSTONE_TEXTURE = loadTexture(tombstoneImg);
 

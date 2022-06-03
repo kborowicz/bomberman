@@ -5,7 +5,7 @@ import GameContext from '../GameContext';
 import BoardBuilder from './BoardBuilder';
 import { ILevel } from './Level';
 
-export default class Level1 implements ILevel {
+export default class Level3 implements ILevel {
 
     public getName(): string {
         return 'Level 5';
@@ -23,17 +23,9 @@ export default class Level1 implements ILevel {
 
         const enemy1 = new ThrowerEnemy(context);
         enemy1.spawnAt(13, 13);
+        enemy1.health = 1;
 
-        const enemy2 = new ThrowerEnemy(context);
-        enemy2.spawnAt(1, 13);
-
-        const enemy3 = new ThrowerEnemy(context);
-        enemy3.spawnAt(13, 1);
-
-        const enemy4 = new PlayerEnemy(context);
-        enemy4.spawnAt(7, 7);
-
-        context.addActors(enemy1, enemy2, enemy3, enemy4);
+        context.addActors(enemy1);
         context.backgroundMusic.play();
     }
 

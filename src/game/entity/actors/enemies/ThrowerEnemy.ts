@@ -18,7 +18,8 @@ export default class ThrowerEnemy extends Enemy {
         this.container.addChild(this.sprite);
 
         this.speed = 2.5;
-        this._maxHealth = 200;
+        this._maxHealth = 80;
+        this.health = 80;
 
         this.on('spawn', () => {
             const runIfPlayerIsNearby = async () => {

@@ -2,7 +2,6 @@ import Game from './game/Game';
 import { ILevel } from './game/level/Level';
 import Level1 from './game/level/Level1';
 import Level2 from './game/level/Level2';
-import Level5 from './game/level/Level5';
 import './index.scss';
 
 class Overlay {
@@ -15,20 +14,38 @@ class Overlay {
     }
 
     public showPlay(onPlayClick: () => void) {
-        const playTitleText = document.createElement('div');
-        playTitleText.append('Play');
-        playTitleText.classList.add('title');
-        playTitleText.addEventListener('click', onPlayClick);
+        const button = document.createElement('div');
+        button.classList.add('play-button');
+        button.append('Play');
+        button.addEventListener('click', onPlayClick);
 
-        this.dom.replaceChildren(playTitleText);
+        this.dom.replaceChildren(button);
     }
 
-    public showGameOver(onTryAgainClick: () => void) {
-        const tryAgainTitleText = document.createElement('div');
-        tryAgainTitleText.append('Try again');
-        tryAgainTitleText.classList.add('title');
+    public showTryAgain(onTryAgainClick: () => void) {
+        const text = document.createElement('div');
+        text.classList.add('orange-title');
+        text.append('GAME OVER!');
 
-        this.dom.replaceChildren(tryAgainTitleText);
+        const button = document.createElement('div');
+        button.classList.add('play-button');
+        button.append('Try again');
+        button.addEventListener('click', onTryAgainClick);
+
+        this.dom.replaceChildren(text, button);
+    }
+
+    public showPlayAgain(onPlayAgainClick: () => void) {
+        const text = document.createElement('div');
+        text.classList.add('orange-title');
+        text.append('YOU WIN!');
+
+        const button = document.createElement('div');
+        button.classList.add('play-button');
+        button.append('Play again');
+        button.addEventListener('click', onPlayAgainClick);
+
+        this.dom.replaceChildren(text, button);
     }
 
 }
@@ -63,24 +80,54 @@ class LevelListElement {
     const menuEl = document.getElementById('menu');
     const overlay = new Overlay();
 
-    const levels = [new Level1(), new Level2(), new Level5()];
+    const levels = [
+        new Level1(), 
+        new Level2()
+    ];
     const levelListEls: LevelListElement[] = [];
+
+    const loadLevel = async (level: ILevel, instantPlay = false) => {
+        const context = game.createContext();
+        await level.load(context);
+
+        if (instantPlay) {
+            level.start(context);
+            overlay.dom.remove();
+        } else {
+            rootEl.append(overlay.dom);
+            overlay.showPlay(async () => {
+                level.start(context);
+                overlay.dom.remove();
+            });
+        }
+
+        context.on('win', () => {
+            if (context.isDestroyed) {
+                return;
+            }
+
+            context.destroy();
+            rootEl.append(overlay.dom);
+            overlay.showPlayAgain(() => loadLevel(level, true));
+        });
+
+        context.on('lose', () => {
+            if (context.isDestroyed) {
+                return;
+            }
+
+            context.destroy();
+            rootEl.append(overlay.dom);
+            overlay.showTryAgain(() => loadLevel(level, true));
+        });
+    };
 
     levels.forEach(level => {
         const listEl = new LevelListElement(level);
         listEl.dom.addEventListener('click', async () => {
             levelListEls.forEach(el => el.isActive = false);
             listEl.isActive = true;
-
-            const context = game.createContext();
-
-            await listEl.level.load(context);
-            rootEl.append(overlay.dom);
-
-            overlay.showPlay(() => {
-                listEl.level.start(context);
-                overlay.dom.remove();
-            });
+            loadLevel(listEl.level);
         });
 
         menuEl.append(listEl.dom);

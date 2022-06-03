@@ -14,7 +14,6 @@ export default abstract class PowerUpBlock extends Block {
     public constructor(context: GameContext) {
         super(context);
         this.sprite = new PowerUpFrameSprite(context.cellSize);
-        this.sprite.addAndFill(this.getFrameRenderable());
     }
 
     public get isWall(): boolean {
@@ -39,6 +38,11 @@ export default abstract class PowerUpBlock extends Block {
         });
     }
 
-    protected abstract getFrameRenderable(): Container;
+    protected setFrameRenderable(renderable: Container) {
+        renderable.width = this.context.cellSize * 3 / 4;
+        renderable.height = this.context.cellSize * 3 / 4;
+
+        this.sprite.addAndCenter(renderable);
+    }
 
 }

@@ -1,9 +1,11 @@
 import { BoardCell } from '@/game/board/BoardCell';
 import GameContext from '@/game/GameContext';
-import { Container } from 'pixi.js';
-import Entity, { EntityEventMap } from '../Entity';
-import HealthBar from '../../sprite/HealthBar';
 import PowerUpBlock from '@/game/powerups/PowerUpBlock';
+import TombstoneSprite from '@/game/sprite/TombstoneSprite';
+import Dynamite from '@/game/weapons/Dynamite';
+import HealthBar from '../../sprite/HealthBar';
+import Entity, { EntityEventMap } from '../Entity';
+import WeaponStack from './WeaponStack';
 
 export interface ActorEventMap extends EntityEventMap {
     'cellchange': (curr: BoardCell, prev: BoardCell) => void;
@@ -29,6 +31,8 @@ export default abstract class Actor<
     protected _health = this._maxHealth;
     protected _isMoving = false;
 
+    protected _weaponStack: WeaponStack;
+
     public constructor(context: GameContext) {
         super(context);
         this.healthBar = new HealthBar(context.cellSize);
@@ -37,8 +41,23 @@ export default abstract class Actor<
         this._id = 'actor_' + Actor.actorCounter;
         Actor.actorCounter++;
 
+        this._weaponStack = new WeaponStack(() => new Dynamite(context));
+
         this.on('healthchange', health => {
             this.healthBar.setHealth(health, this.maxHealth);
+        });
+
+        this.on('die', () => {
+            if (!context.player.isAlive) {
+                context.playerLose();
+            } else {
+                if (context.enemies.every(e => !e.isAlive)) {
+                    context.playerWin();
+                }
+            }
+
+            this.container.removeChildren();
+            this.container.addChild(new TombstoneSprite(context.cellSize));
         });
     }
 
@@ -59,12 +78,15 @@ export default abstract class Actor<
     }
 
     public set health(value: number) {
-        this._health = Math.max(value, 0);
+        const prevHealth = this._health;
+        this._health = Math.min(Math.max(value, 0), this.maxHealth);
 
-        this.emmiter.emit('healthchange', this._health);
+        if (prevHealth != this._health) {
+            this.emitter.emit('healthchange', this._health);
 
-        if (this._health == 0) {
-            this.emmiter.emit('die');
+            if (this._health == 0) {
+                this.emitter.emit('die');
+            }
         }
     }
 
@@ -74,6 +96,10 @@ export default abstract class Actor<
 
     public get isAlive() {
         return this._health > 0;
+    }
+
+    public get weaponStack() {
+        return this._weaponStack;
     }
 
     public get nearestCell() {
@@ -105,7 +131,7 @@ export default abstract class Actor<
         }
 
         this.context.addObject(this);
-        this.emmiter.emit('spawn', this.nearestCell);
+        this.emitter.emit('spawn', this.nearestCell);
     }
 
     public moveToCell(col: number, row: number): void;
@@ -130,7 +156,7 @@ export default abstract class Actor<
         let collision = false;
 
         if (this.nearestCell != this.currentCell) {
-            this.emmiter.emit('cellchange', this.nearestCell, this.currentCell);
+            this.emitter.emit('cellchange', this.nearestCell, this.currentCell);
             this.currentCell = this.nearestCell;
 
             if (this.currentCell.block instanceof PowerUpBlock) {
@@ -183,10 +209,10 @@ export default abstract class Actor<
             this.renderable.y += dy;
 
             this._isMoving = true;
-            this.emmiter.emit('move', dx, dy);
+            this.emitter.emit('move', dx, dy);
         } else {
             this._isMoving = false;
-            this.emmiter.emit('idle');
+            this.emitter.emit('idle');
         }
 
         return collision;

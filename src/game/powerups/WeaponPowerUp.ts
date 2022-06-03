@@ -1,21 +1,25 @@
 import { Container } from 'pixi.js';
 import { BoardCell } from '../board/BoardCell';
 import Actor from '../entity/actors/Actor';
-import Player from '../entity/actors/Player';
+import GameContext from '../GameContext';
+import Weapon from '../weapons/Weapon';
 import PowerUpBlock from './PowerUpBlock';
 
 export default class WeaponPowerUp extends PowerUpBlock {
 
-    public onCollect(actor: Actor, cell: BoardCell): void {
-        if (!(actor instanceof Player)) {
-            return;
-        }
+    private readonly weapon: Weapon;
 
-        this.playCollectSound();
+    public constructor(context: GameContext, weapon: Weapon) {
+        super(context);
+        this.weapon = weapon;
+
+        this.setFrameRenderable(this.weapon.getRenderable());
     }
 
-    protected getFrameRenderable(): Container {
-        return new Container();
+    public onCollect(actor: Actor, cell: BoardCell): void {
+        this.playCollectSound();
+        cell.setAsDefault();
+        actor.weaponStack.push(this.weapon);
     }
 
 }

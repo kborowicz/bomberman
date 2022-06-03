@@ -1,22 +1,19 @@
 import GameContext from '@/game/GameContext';
-import Dynamite from '@/game/weapons/Dynamite';
-import { Sprite } from 'pixi.js';
+import CharacterSprite from '@/game/sprite/CharacterSprite';
+import { OutlineFilter } from '@pixi/filter-outline';
 import Resources from '../../Resources';
 import Actor from './Actor';
-import ActorSprite from '../../sprite/CharacterSprite';
-import HealthBar from '../../sprite/HealthBar';
-import CharacterSprite from '../../sprite/CharacterSprite';
-import TimeBomb from '@/game/weapons/TimeBomb';
-import { OutlineFilter } from '@pixi/filter-outline';
 
 export default class Player extends Actor {
 
-    private sprite: ActorSprite;
+    private sprite: CharacterSprite;
 
     private isDownW = false;
     private isDownS = false;
     private isDownA = false;
     private isDownD = false;
+
+    private lastDeeployTime = 0;
 
     public constructor(context: GameContext) {
         super(context);
@@ -33,20 +30,24 @@ export default class Player extends Actor {
 
             document.addEventListener('keypress', e => {
                 if (e.key === ' ') {
-                    this.deployBomb();
+                    this.deployWeapon();
                 }
             });
 
             const { ticker } = context;
 
             ticker.add(dt => {
+                if (context.isDestroyed) {
+                    return;
+                }
+
                 const movementDelta = dt * this.speed;
 
                 let dx = (+this.isDownA * (-1) + +this.isDownD * (+1)) * movementDelta;
                 let dy = (+this.isDownW * (-1) + +this.isDownS * (+1)) * movementDelta;
 
                 if (dx == 0 && dy == 0) {
-                    this.emmiter.emit('idle');
+                    this.emitter.emit('idle');
                     return;
                 }
 
@@ -114,9 +115,17 @@ export default class Player extends Actor {
         });
     }
 
-    private deployBomb() {
-        const dynamite = new Dynamite(this.context);
-        dynamite.spawnAt(this.nearestCell, this);
+    private deployWeapon() {
+        const time = new Date().getTime();
+
+        if (time - this.lastDeeployTime < 1000) {
+            return;
+        }
+
+        this.lastDeeployTime = time;
+
+        const weapon = this.weaponStack.pop();
+        weapon.spawnAt(this.nearestCell, this);
     }
 
     private addKeyObserver(key: string, listener: (isDown: boolean) => void) {

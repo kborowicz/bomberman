@@ -1,6 +1,6 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { Howl } from 'howler';
-import { filters, Sprite } from 'pixi.js';
+import { Container, filters, Sprite } from 'pixi.js';
 import timeBombSoundSrc from '../assets/sounds/time_bomb.mp3';
 import { BoardCell } from '../board/BoardCell';
 import Actor from '../entity/actors/Actor';
@@ -19,7 +19,7 @@ export default class Dynamite extends Weapon {
 
         // Before explosion
         const dynamiteSprite = new WeaponSprite(cellSize);
-        dynamiteSprite.addAndFill(Sprite.from(Resources.DYNAMITE_TEXTURE));
+        dynamiteSprite.addAndFill(Sprite.from(Resources.TIMEBOMB_TEXTURE));
         dynamiteSprite.align(target);
 
         stage.addChild(dynamiteSprite);
@@ -52,7 +52,7 @@ export default class Dynamite extends Weapon {
             stage.filters = [shockWaveFilter, grayOverlayFilter];
         }
 
-        let shockWaveIncrement = 0.003;
+        let shockWaveIncrement = 0.002;
         let grayOverlayIncrement = 0.007;
 
         const updateFilters = () => {
@@ -76,15 +76,16 @@ export default class Dynamite extends Weapon {
 
         actors.forEach(actor => {
             if (actor != owner) {
-                actorsSpeed.push([actor, actor.speed]);
-                actor.speed = 1;
+                const dspeed = Math.max(Math.min(4, actor.speed - 1), 0);
+                actorsSpeed.push([actor, dspeed]);
+                actor.speed -= dspeed;
             }
         });
 
-        await sleep(2500);
+        await sleep(3500);
 
-        actorsSpeed.forEach(([actor, prevSpeed]) => {
-            actor.speed = prevSpeed;
+        actorsSpeed.forEach(([actor, dspeed]) => {
+            actor.speed += dspeed;
         });
 
         shockWaveIncrement = 0.04;
@@ -95,6 +96,11 @@ export default class Dynamite extends Weapon {
         ticker.remove(updateFilters);
         stage.filters.splice(stage.filters.indexOf(shockWaveFilter), 1);
         stage.filters.splice(stage.filters.indexOf(grayOverlayFilter), 1);
+    }
+
+    public getRenderable(): Container {
+        return new WeaponSprite(this.context.cellSize)
+            .addAndFill(Sprite.from(Resources.TIMEBOMB_TEXTURE));
     }
 
 }

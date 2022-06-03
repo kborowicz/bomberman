@@ -1,4 +1,3 @@
-import { Container } from 'pixi.js';
 import { BoardCell } from '../../../board/BoardCell';
 import Actor, { ActorEventMap } from '../Actor';
 import Movement from './Movement';
@@ -10,7 +9,7 @@ export interface EnemyEventMap extends ActorEventMap {
 
 export default abstract class Enemy<
     E extends EnemyEventMap = EnemyEventMap
-> extends Actor<E> {
+    > extends Actor<E> {
 
     protected currentMovement: Movement;
 
@@ -31,11 +30,11 @@ export default abstract class Enemy<
         }
 
         const newMovement = new Movement(this, srcCell, destCell);
-        newMovement.on('change', (dx, dy) => this.emmiter.emit('movement-change', dx, dy));
+        newMovement.on('change', (dx, dy) => this.emitter.emit('movement-change', dx, dy));
         newMovement.on('finish', () => {
             this._isMoving = false;
-            this.emmiter.emit('movement-finish');
-            this.emmiter.emit('idle');
+            this.emitter.emit('movement-finish');
+            this.emitter.emit('idle');
         });
 
         if (arg3) {

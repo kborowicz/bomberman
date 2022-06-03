@@ -9,6 +9,8 @@ import { Howl } from 'howler';
 import { Point } from 'pixi.js';
 import Enemy from './Enemy';
 import zapSoundSrc from '@/game/assets/zap.mp3';
+import WeaponStack from '../WeaponStack';
+import Bomb from '@/game/weapons/Bomb';
 
 export default class FlashEnemy extends Enemy {
 
@@ -62,20 +64,20 @@ export default class FlashEnemy extends Enemy {
 
             startNewMove();
 
-            const deployBomb = async () => {
+            const deployWeapon = async () => {
                 if (!this.isAlive || context.isDestroyed) {
                     return;
                 }
 
                 await sleep(2500, 3000);
 
-                const dynamite = new Dynamite(this.context);
-                dynamite.spawnAt(this.nearestCell, this);
+                const weapon = this.weaponStack.pop();
+                weapon.spawnAt(this.nearestCell, this);
 
-                deployBomb();
+                deployWeapon();
             };
 
-            deployBomb();
+            deployWeapon();
         });
 
         this.on('movement-change', (dx, dy) => {
@@ -88,11 +90,6 @@ export default class FlashEnemy extends Enemy {
         });
 
         this.on('idle', () => this.sprite.stop());
-
-        this.on('die', () => {
-            this.container.removeChildren();
-            this.container.addChild(new TombstoneSprite(context.cellSize));
-        });
     }
 
 }

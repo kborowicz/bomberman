@@ -1,6 +1,6 @@
 import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { Howl } from 'howler';
-import { DisplayObject, Sprite } from 'pixi.js';
+import { Container, DisplayObject, Sprite } from 'pixi.js';
 import bombSoundSrc from '../assets/sounds/bomb.mp3';
 import { BoardCell } from '../board/BoardCell';
 import BoundingBox from '../collision/BoundingBox';
@@ -116,7 +116,7 @@ export default class Bomb extends Weapon {
                 actors.forEach(actor => {
                     const [f1, f2] = actor.bbox.getIntersection(spriteBbox);
                     if (f1 > 0.01 && f2 > 0.01) {
-                        actor.health -= 20;
+                        actor.health -= 10;
                     }
                 });
             });
@@ -131,6 +131,11 @@ export default class Bomb extends Weapon {
         addedRenderables.forEach(r => r.destroy());
         ticker.remove(updateShockWave);
         stage.filters.splice(stage.filters.indexOf(shockWaveFilter), 1);
+    }
+
+    public getRenderable(): Container {
+        return new WeaponSprite(this.context.cellSize)
+            .addAndFill(Sprite.from(Resources.BOMB_TEXTURE));
     }
 
 }

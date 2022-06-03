@@ -61,8 +61,14 @@ canvas {
         right: 0;
         bottom: 0;
         left: 0;
+        flex-direction: column;
 
-        .title {
+        .orange-title {
+            color: orange;
+            font-size: 70px;
+        }
+
+        .play-button {
             font-size: 45px;
             user-select: none;
             cursor: pointer;
@@ -70,6 +76,7 @@ canvas {
             background-color: #3d3d3d;
             border: 1px solid #dadada;
             min-width: 120px;
+            padding: 0 20px;
 
             &:hover {
                 color: orange;

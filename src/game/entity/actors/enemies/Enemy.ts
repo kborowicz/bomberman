@@ -20,7 +20,6 @@ export default abstract class Enemy<
             this.currentMovement.cancel();
         }
 
-        const srcCell = this.nearestCell;
         let destCell: BoardCell;
 
         if (typeof arg1 === 'number') {
@@ -29,7 +28,7 @@ export default abstract class Enemy<
             destCell = arg1;
         }
 
-        const newMovement = new Movement(this, srcCell, destCell);
+        const newMovement = new Movement(this, destCell);
         newMovement.on('change', (dx, dy) => this.emitter.emit('movement-change', dx, dy));
         newMovement.on('finish', () => {
             this._isMoving = false;

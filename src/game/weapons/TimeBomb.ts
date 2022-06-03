@@ -4,14 +4,24 @@ import { Container, filters, Sprite } from 'pixi.js';
 import timeBombSoundSrc from '../assets/sounds/time_bomb.mp3';
 import { BoardCell } from '../board/BoardCell';
 import Actor from '../entity/actors/Actor';
+import GameContext from '../GameContext';
 import Resources from '../Resources';
 import WeaponSprite from '../sprite/WeaponSprite';
 import sleep from '../utils/sleep';
 import Weapon from './Weapon';
 
-export default class Dynamite extends Weapon {
+export interface ITimeBombProps {
+    delay: number;
+}
 
-    private delay = 2000;
+export default class TimeBomb extends Weapon {
+
+    private delay: number;
+
+    public constructor(context: GameContext, props?: ITimeBombProps) {
+        super(context);
+        this.delay = props?.delay ?? 2000; 
+    }
 
     public async spawnAt(target: BoardCell, owner: Actor) {
         const { app, cellSize, ticker, actors } = this.context;
@@ -22,16 +32,18 @@ export default class Dynamite extends Weapon {
         dynamiteSprite.addAndFill(Sprite.from(Resources.TIMEBOMB_TEXTURE));
         dynamiteSprite.align(target);
 
-        stage.addChild(dynamiteSprite);
+        if (this.delay > 0) {
+            stage.addChild(dynamiteSprite);
 
-        const timerSteps = 3;
-        const stepDelay = this.delay / timerSteps;
-        for (let i = 0; i < timerSteps; i++) {
-            dynamiteSprite.timerValue = timerSteps - i;
-            await sleep(stepDelay);
+            const timerSteps = 3;
+            const stepDelay = this.delay / timerSteps;
+            for (let i = 0; i < timerSteps; i++) {
+                dynamiteSprite.timerValue = timerSteps - i;
+                await sleep(stepDelay);
+            }
+    
+            dynamiteSprite.destroy();
         }
-
-        dynamiteSprite.destroy();
 
         const shockWaveFilter = new ShockwaveFilter([
             (target.col + 0.5) * cellSize,
@@ -66,7 +78,7 @@ export default class Dynamite extends Weapon {
 
         ticker.add(updateFilters);
 
-        new Howl({
+        const bombSound = new Howl({
             src: [timeBombSoundSrc],
             volume: 0.5,
             autoplay: true

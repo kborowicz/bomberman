@@ -59,7 +59,7 @@ export default class Dynamite extends Weapon {
         const updateShockWave = () => shockWaveFilter.time += 0.01;
         ticker.add(updateShockWave);
 
-        new Howl({
+        const dynamiteSound = new Howl({
             src: [dynamiteSoundSrc],
             volume: 0.25,
             autoplay: true

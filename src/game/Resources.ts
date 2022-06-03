@@ -12,6 +12,9 @@ import character2Atlas from './assets/character/2/2.png';
 import character3AtlasData from './assets/character/3/3.json';
 import character3Atlas from './assets/character/3/3.png';
 
+import character4AtlasData from './assets/character/4/4.json';
+import character4Atlas from './assets/character/4/4.png';
+
 import grassImg from './assets/grass.png';
 import wallImg from './assets/wall.png';
 import woodImg from './assets/player.png';
@@ -39,6 +42,7 @@ export default class Resources {
     public static CHARACTER_1: Spritesheet;
     public static CHARACTER_2: Spritesheet;
     public static CHARACTER_3: Spritesheet;
+    public static CHARACTER_4: Spritesheet;
 
     public static async initialize() {
         this.GRASS_TEXTURE = loadTexture(grassImg);
@@ -55,6 +59,7 @@ export default class Resources {
         this.CHARACTER_1 = await loadSpritesheet(character1Atlas, character1AtlasData);
         this.CHARACTER_2 = await loadSpritesheet(character2Atlas, character2AtlasData);
         this.CHARACTER_3 = await loadSpritesheet(character3Atlas, character3AtlasData);
+        this.CHARACTER_4 = await loadSpritesheet(character4Atlas, character4AtlasData);
     }
 
 }

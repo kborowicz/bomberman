@@ -17,6 +17,7 @@ export default class Movement implements IEventEmitter<MovementEventMap> {
 
     private readonly emmiter: EventEmitter;
     public readonly actor: Actor;
+    private _src: BoardCell;
     public readonly dest: BoardCell;
 
     private readonly path: Path;
@@ -24,7 +25,7 @@ export default class Movement implements IEventEmitter<MovementEventMap> {
     private _isRunning = false;
     private _isPaused = false;
 
-    public constructor(actor: Actor, src: BoardCell, dest: BoardCell) {
+    public constructor(actor: Actor, dest: BoardCell) {
         this.emmiter = new EventEmitter();
         this.actor = actor;
         this.dest = dest;
@@ -50,9 +51,18 @@ export default class Movement implements IEventEmitter<MovementEventMap> {
             return;
         }
 
-        const { board, ticker } = this.actor.context;
+        this._src = this.actor.nearestCell;
+        const { ticker } = this.actor.context;
         const pathPoints = [...this.path.points];
-        
+
+        const { cx: c0, cy: r0 } = this.actor.bbox;
+        const { cx: c1, cy: r1 } = pathPoints[1].bbox;
+        const angle = Math.atan2(r1 - r0, c1 - c0) % (Math.PI / 2);
+
+        if (Math.abs(angle) < 0.01) {
+            pathPoints.shift();
+        }
+
         let movement: IMovementData = this.getMovementData(
             this.actor.bbox,
             pathPoints.shift().bbox
@@ -109,6 +119,10 @@ export default class Movement implements IEventEmitter<MovementEventMap> {
 
         ticker.add(this.tickerCallback);
         this._isRunning = true;
+    }
+
+    public get src() {
+        return this._src;
     }
 
     public pause() {

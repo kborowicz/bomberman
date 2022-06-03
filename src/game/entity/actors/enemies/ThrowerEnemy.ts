@@ -6,12 +6,19 @@ import sleep from '@/game/utils/sleep';
 import Bomb from '@/game/weapons/Bomb';
 import { OutlineFilter } from '@pixi/filter-outline';
 import Enemy from './Enemy';
+import throwBombAt from './throwBombAt';
+
+export interface IThrowerEnemyProps {
+    runAwayFromPlayer?: boolean;
+}
 
 export default class ThrowerEnemy extends Enemy {
 
     protected sprite: CharacterSprite;
 
-    public constructor(context: GameContext) {
+    private runAwayFromPlayer: boolean;
+
+    public constructor(context: GameContext, props?: IThrowerEnemyProps) {
         super(context);
         this.sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_3);
         this.sprite.filters = [new OutlineFilter(1)];
@@ -21,35 +28,39 @@ export default class ThrowerEnemy extends Enemy {
         this._maxHealth = 80;
         this.health = 80;
 
+        this.runAwayFromPlayer = props?.runAwayFromPlayer ?? true;
+
         this.on('spawn', () => {
-            const runIfPlayerIsNearby = async () => {
-                if (!this.isAlive || context.isDestroyed) {
-                    return;
-                }
-
-                await sleep(500);
-
-                if (this.isPlayerNearby()) {
-                    const randomCell = this.context.board.getRandomNonWallCell();
-                    const movement = this.goTo(randomCell, false);
-
-                    if (!movement.isPossible) {
-                        runIfPlayerIsNearby();
+            if (this.runAwayFromPlayer) {
+                const runIfPlayerIsNearby = async () => {
+                    if (!this.isAlive || context.isDestroyed) {
+                        return;
                     }
 
-                    movement.on('finish', () => runIfPlayerIsNearby());
-                    movement.on('change', () => {
-                        if (!this.isAlive || context.isDestroyed) {
-                            movement.cancel();
-                        }
-                    });
-                    movement.start();
-                } else {
-                    runIfPlayerIsNearby();
-                }
-            };
+                    await sleep(500);
 
-            runIfPlayerIsNearby();
+                    if (this.isPlayerNearby()) {
+                        const randomCell = this.context.board.getRandomNonWallCell();
+                        const movement = this.goTo(randomCell, false);
+
+                        if (!movement.isPossible) {
+                            runIfPlayerIsNearby();
+                        }
+
+                        movement.on('finish', () => runIfPlayerIsNearby());
+                        movement.on('change', () => {
+                            if (!this.isAlive || context.isDestroyed) {
+                                movement.cancel();
+                            }
+                        });
+                        movement.start();
+                    } else {
+                        runIfPlayerIsNearby();
+                    }
+                };
+
+                runIfPlayerIsNearby();
+            }
 
             const throwBomb = async () => {
                 if (!this.isAlive || context.isDestroyed) {
@@ -59,7 +70,11 @@ export default class ThrowerEnemy extends Enemy {
                 await sleep(1500, 3000);
 
                 if (!this.isMoving) {
-                    this.throwBombAt(context.player.nearestCell);
+                    throwBombAt({
+                        context,
+                        src: this.nearestCell,
+                        dest: context.player.nearestCell
+                    });
                     await sleep(500);
                 }
 
@@ -89,40 +104,6 @@ export default class ThrowerEnemy extends Enemy {
         const cellsDistance = Math.round(distance / cellSize);
 
         return cellsDistance < 4;
-    }
-
-    private throwBombAt(target: BoardCell) {
-        const { ticker } = this.context;
-        const { cx: x0, cy: y0 } = this.nearestCell.bbox;
-        const { cx: x1, cy: y1 } = target.bbox;
-
-        const bombDelay = 3000;
-        const throwTime = bombDelay;
-        const bomb = new Bomb(this.context, { delay: bombDelay });
-        bomb.spawnAt(target, this);
-
-        this.nearestCell.alignObject(bomb.sprite);
-
-        const dx = x1 - x0;
-        const dy = y1 - y0;
-
-        const vx = dx / throwTime;
-        const vy = dy / throwTime;
-
-        const moveBomb = () => {
-            const dt = ticker.elapsedMS;
-
-            if (!bomb.sprite.destroyed) {
-                bomb.sprite.x += dt * vx;
-                bomb.sprite.y += dt * vy;
-            }
-        };
-
-        ticker.add(moveBomb);
-
-        setTimeout(() => {
-            ticker.remove(moveBomb);
-        }, throwTime);
     }
 
 }

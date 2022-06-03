@@ -5,6 +5,7 @@ import Actor from './entity/actors/Actor';
 import Player from './entity/actors/Player';
 import { IRenderable } from './IRenderable';
 import bgMusicSrc from '@/game/assets/sounds/background_music.mp3';
+import epicMusicSrc from '@/game/assets/sounds/elden_ring_epic_music.mp3';
 import Enemy from './entity/actors/enemies/Enemy';
 import { IEventEmitter } from './IEventEmitter';
 import EventEmitter from 'eventemitter3';
@@ -28,7 +29,15 @@ export default class GameContext implements IEventEmitter<GameContextEventMap> {
     public readonly backgroundMusic = new Howl({
         src: [bgMusicSrc],
         volume: 0.3,
-        loop: true
+        loop: true,
+        autoplay: false
+    });
+
+    public readonly epicMusic = new Howl({
+        src: [epicMusicSrc],
+        volume: 0.3,
+        loop: true,
+        autoplay: false
     });
 
     public constructor() {
@@ -143,6 +152,7 @@ export default class GameContext implements IEventEmitter<GameContextEventMap> {
 
     public destroy() {
         this._isDestroyed = true;
+        this.epicMusic.stop();
         this.backgroundMusic.stop();
     }
 

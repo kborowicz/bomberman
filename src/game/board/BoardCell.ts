@@ -114,6 +114,16 @@ export class BoardCell implements IRenderable, IHasBoundingBox {
         this.block = null;
     }
 
+    public getDistance(other: BoardCell) {
+        const b0 = this.bbox;
+        const b1 = other.bbox;
+
+        const dx = b1.cx - b0.cx;
+        const dy = b1.cy - b0.cy;
+
+        return Math.sqrt(dx ** 2 + dy ** 2) / this.board.cellSize;
+    }
+
     public alignObject(object: Container) {
         const cellSize = this.board.cellSize;
         const x0 = this.col * cellSize;

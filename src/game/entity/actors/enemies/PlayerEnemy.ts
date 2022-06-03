@@ -1,17 +1,18 @@
 import { BoardCell } from '@/game/board/BoardCell';
 import GameContext from '@/game/GameContext';
 import CharacterSprite from '@/game/sprite/CharacterSprite';
+import sleep from '@/game/utils/sleep';
 import Bomb from '@/game/weapons/Bomb';
 import TimeBomb from '@/game/weapons/TimeBomb';
 import { OutlineFilter } from '@pixi/filter-outline';
 import Resources from '../../../Resources';
 import Actor from '../Actor';
 import Enemy from './Enemy';
+import Movement from './Movement';
 
 export default class PlayerEnemy extends Enemy {
 
     protected sprite: CharacterSprite;
-    private prevTargetCell: BoardCell;
 
     public constructor(context: GameContext) {
         super(context);
@@ -19,12 +20,25 @@ export default class PlayerEnemy extends Enemy {
         this.sprite.filters = [new OutlineFilter(1)];
         this.container.addChild(this.sprite);
 
-        this.on('spawn', () => {
-            this.tryToKillActor(this.context.player);
+        const {player, board} = context;
+        let lastMovement: Movement;
 
-            setInterval(() => {
-                this.tryToKillActor(this.context.player);
-            }, 2500);
+        this.on('spawn', async () => {
+            let lastTarget: BoardCell;
+            const actor = context.player;
+
+            while (this.isAlive && !context.isDestroyed) {
+                if (this.nearestCell.getDistance(actor.nearestCell) <= 4) {
+                    const weapon = this.weaponStack.pop();
+                    weapon.spawnAt(this.nearestCell, this);
+
+                    lastMovement = this.goTo(board.getRandomNonWallCell());
+                    await sleep(2500);
+                }
+
+                lastMovement = this.goTo(actor.nearestCell);
+                await sleep(1000);
+            }
         });
 
         this.on('move', (dx, dy) => {
@@ -33,18 +47,7 @@ export default class PlayerEnemy extends Enemy {
         });
 
         this.on('idle', () => this.sprite.stop());
-    }
-
-    private tryToKillActor(actor: Actor) {
-        // if (actor.nearestCell != this.prevTargetCell) {
-        const movement = this.goTo(actor.nearestCell);
-        movement.on('finish', () => {
-            const bomb = new TimeBomb(this.context);
-            bomb.spawnAt(this.nearestCell, this);
-        });
-
-        this.prevTargetCell = actor.nearestCell;
-        // }
+        this.on('die', () => lastMovement?.cancel());
     }
 
 }

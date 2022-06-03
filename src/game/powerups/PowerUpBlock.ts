@@ -33,7 +33,7 @@ export default abstract class PowerUpBlock extends Block {
     protected playCollectSound() {
         new Howl({
             src: [powerUpSoundSrc],
-            volume: 0.2,
+            volume: 0.1,
             autoplay: true
         });
     }

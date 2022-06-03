@@ -2,6 +2,8 @@ import Game from './game/Game';
 import { ILevel } from './game/level/Level';
 import Level1 from './game/level/Level1';
 import Level2 from './game/level/Level2';
+import Level3 from './game/level/Level3';
+import Level4 from './game/level/Level4';
 import './index.scss';
 
 class Overlay {
@@ -81,9 +83,14 @@ class LevelListElement {
     const overlay = new Overlay();
 
     const levels = [
-        new Level1(), 
-        new Level2()
+        new Level1(),
+        new Level2(),
+        // new Level3(),
+        // new Level4(),
+        new Level3(),
+        new Level4()
     ];
+
     const levelListEls: LevelListElement[] = [];
 
     const loadLevel = async (level: ILevel, instantPlay = false) => {

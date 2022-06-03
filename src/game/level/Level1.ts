@@ -1,4 +1,5 @@
 import FlashEnemy from '../entity/actors/enemies/FlashEnemy';
+import PlayerEnemy from '../entity/actors/enemies/PlayerEnemy';
 import ThrowerEnemy from '../entity/actors/enemies/ThrowerEnemy';
 import GameContext from '../GameContext';
 import PowerUpFactory from '../powerups/PowerUpFactory';
@@ -20,26 +21,17 @@ export default class Level1 implements ILevel {
     public start(context: GameContext) {
         context.player.spawnAt(1, 1);
 
-        const t1 = new ThrowerEnemy(context);
-        t1.spawnAt(7, 7);
+        const p1 = new PlayerEnemy(context);
+        p1.spawnAt(13, 13);
 
-        const f1 = new FlashEnemy(context);
-        f1.spawnAt(2, 7);
+        context.board.getCellAt(7, 7).block = PowerUpFactory.getPowerUp('speed', context);
 
-        const f2 = new FlashEnemy(context);
-        f2.spawnAt(12, 7);
-
-        context.addActors(t1, f1, f2);
-
+        context.addActors(p1);
         context.backgroundMusic.play();
 
         (async () => {
-            for (let i = 0; i < 15; i++) {
-                if (context.isDestroyed) {
-                    break;
-                }
-
-                await sleep(5000);
+            while (!context.isDestroyed) {
+                await sleep(8000);
                 const cell = context.board.getRandomNonWallCell();
                 const powerUp = PowerUpFactory.getRandom(context);
                 cell.block = powerUp;

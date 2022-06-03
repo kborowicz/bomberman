@@ -17,6 +17,7 @@ export interface IRingBombProps {
     radius?: number,
     delay?: number,
     propagationDelay?: number;
+    destroyBricks?: boolean;
 }
 
 export default class Bomb extends Weapon {
@@ -24,6 +25,7 @@ export default class Bomb extends Weapon {
     private readonly radius: number;
     private readonly delay: number;
     private readonly propagationDelay: number;
+    private readonly destroyBricks: boolean;
 
     //TODO lepiej rozwiązać dostęp do zmiennej
     public sprite: WeaponSprite;
@@ -31,9 +33,10 @@ export default class Bomb extends Weapon {
     public constructor(context: GameContext, props?: IRingBombProps) {
         super(context);
 
-        this.radius = props?.radius ?? 3;
+        this.radius = props?.radius ?? 2;
         this.delay = props?.delay ?? 2000;
         this.propagationDelay = props?.propagationDelay ?? 100;
+        this.destroyBricks = props?.destroyBricks ?? true;
     }
 
     public async spawnAt(target: BoardCell, owner: Actor): Promise<void> {
@@ -47,16 +50,18 @@ export default class Bomb extends Weapon {
 
         this.sprite = bombSprite;
 
-        stage.addChild(bombSprite);
+        if (this.delay > 0) {
+            stage.addChild(bombSprite);
 
-        const timerSteps = 3;
-        const stepDelay = this.delay / timerSteps;
-        for (let i = 0; i < timerSteps; i++) {
-            bombSprite.timerValue = timerSteps - i;
-            await sleep(stepDelay);
+            const timerSteps = 3;
+            const stepDelay = this.delay / timerSteps;
+            for (let i = 0; i < timerSteps; i++) {
+                bombSprite.timerValue = timerSteps - i;
+                await sleep(stepDelay);
+            }
+
+            bombSprite.destroy();
         }
-
-        bombSprite.destroy();
 
         // After explosion
         const addedRenderables: DisplayObject[] = [];
@@ -78,29 +83,22 @@ export default class Bomb extends Weapon {
         const updateShockWave = () => shockWaveFilter.time += 0.01;
         ticker.add(updateShockWave);
 
-        new Howl({
+        const bombSound = new Howl({
             src: [bombSoundSrc],
             volume: 0.1,
             autoplay: true
         });
-
-        const cx0 = target.bbox.cx;
-        const cy0 = target.bbox.cy;
 
         for (let i = 0; i < this.radius; i++) {
             const ring = BresenhamCircle.getOutline(target.col, target.row, i + 1);
             ring.forEach(([col, row]) => {
                 const cell = board.getCellAt(col, row);
 
-                // if (!cell || cell.isWall && !cell.isDestroyable) {
-                //     return;
-                // }
-
                 if (!cell) {
                     return;
                 }
 
-                if (cell.isDestroyable) {
+                if (this.destroyBricks && cell.isDestroyable) {
                     cell.setAsDefault();
                 }
 
@@ -120,8 +118,6 @@ export default class Bomb extends Weapon {
                     }
                 });
             });
-
-            const rSq = (this.radius * cellSize) ** 2;
 
             await sleep(this.propagationDelay);
         }

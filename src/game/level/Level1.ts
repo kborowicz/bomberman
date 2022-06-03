@@ -2,7 +2,9 @@ import FlashEnemy from '../entity/actors/enemies/FlashEnemy';
 import PlayerEnemy from '../entity/actors/enemies/PlayerEnemy';
 import GameContext from '../GameContext';
 import HealthPowerUp from '../powerups/HealthPowerUp';
+import PowerUpFactory from '../powerups/PowerUpFactory';
 import SpeedPowerUp from '../powerups/SpeedPowerUp';
+import sleep from '../utils/sleep';
 import BoardBuilder from './BoardBuilder';
 import { ILevel } from './Level';
 
@@ -13,8 +15,6 @@ export default class Level1 implements ILevel {
     }
 
     public load(context: GameContext): void | Promise<void> {
-        const { app, board } = context;
-
         this.initBoard(context);
         context.resize();
     }
@@ -42,6 +42,19 @@ export default class Level1 implements ILevel {
         context.board.getCellAt(2, 2).block = new SpeedPowerUp(context);
 
         context.backgroundMusic.play();
+
+        (async () => {
+            for (let i = 0; i < 6; i++) {
+                if (context.isDestroyed) {
+                    break;
+                }
+
+                await sleep(8000);
+                const cell = context.board.getRandomNonWallCell();
+                const powerUp = PowerUpFactory.getRandom(context);
+                cell.block = powerUp;
+            }
+        })();
     }
 
     private initBoard(context: GameContext) {

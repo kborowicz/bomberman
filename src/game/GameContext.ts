@@ -112,10 +112,10 @@ export default class GameContext implements IEventEmitter<GameContextEventMap> {
     }
 
     public addObject(object: IRenderable | DisplayObject) {
-        if ((object as IRenderable).renderable) {
-            this.app.stage.addChild(object.renderable as DisplayObject);
-        } else {
+        if (object instanceof DisplayObject) {
             this.app.stage.addChild(object as DisplayObject);
+        } else if (!!(object as IRenderable).renderable) {
+            this.app.stage.addChild(object.renderable as DisplayObject);
         }
     }
 

@@ -1,6 +1,7 @@
 import ChronosBoss from '../entity/actors/enemies/ChronosBoss';
 import GameContext from '../GameContext';
 import PowerUpFactory from '../powerups/PowerUpFactory';
+import TombstoneSprite from '../sprite/TombstoneSprite';
 import sleep from '../utils/sleep';
 import Bomb from '../weapons/Bomb';
 import TimeBomb from '../weapons/TimeBomb';
@@ -33,18 +34,23 @@ export default class Level4 implements ILevel {
         context.epicMusic.play();
 
         (async () => {
-            await sleep(19150);
-
-            const timeBomb = new TimeBomb(context, { delay: 0 });
-            const bomb = new Bomb(context, {
-                delay: 0, radius: 6, propagationDelay: 100, destroyBricks: false
-            });
-
             const spawnCell = context.board.getCellAt(7, 7);
 
+            const tombStoneSprite = new TombstoneSprite(context.cellSize);
+            context.addObject(tombStoneSprite);
+            spawnCell.alignObject(tombStoneSprite);
+
+            await sleep(19150);
+            tombStoneSprite.destroy();
+        
             const chronos = new ChronosBoss(context);
             chronos.spawnAt(spawnCell);
             context.addActors(chronos);
+
+            const timeBomb = new TimeBomb(context, { delay: 0 });
+            const bomb = new Bomb(context, {
+                delay: 0, radius: 7, propagationDelay: 100, destroyBricks: false
+            });
 
             timeBomb.spawnAt(spawnCell, null);
             bomb.spawnAt(spawnCell, null);

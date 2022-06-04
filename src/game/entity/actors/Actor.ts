@@ -1,7 +1,9 @@
 import { BoardCell } from '@/game/board/BoardCell';
 import GameContext from '@/game/GameContext';
 import PowerUpBlock from '@/game/powerups/PowerUpBlock';
+import ShieldSprite from '@/game/sprite/ShieldSprite';
 import TombstoneSprite from '@/game/sprite/TombstoneSprite';
+import sleep from '@/game/utils/sleep';
 import Dynamite from '@/game/weapons/Dynamite';
 import HealthBar from '../../sprite/HealthBar';
 import Entity, { EntityEventMap } from '../Entity';
@@ -25,18 +27,27 @@ export default abstract class Actor<
     protected readonly _id: string;
     protected currentCell: BoardCell;
     protected healthBar: HealthBar;
+    protected shieldSprite: ShieldSprite;
 
     protected _speed = 4;
     protected _maxHealth = 150;
     protected _health = this._maxHealth;
     protected _isMoving = false;
+    protected _hasShield = false;
 
     protected _weaponStack: WeaponStack;
 
     public constructor(context: GameContext) {
         super(context);
         this.healthBar = new HealthBar(context.cellSize);
+        this.shieldSprite = new ShieldSprite(context.cellSize);
+
+        this.shieldSprite.visible = false;
+        this.shieldSprite.zIndex = 1;
+        this.healthBar.renderable.zIndex = 2;
+
         this.container.addChild(this.healthBar.renderable);
+        this.container.addChild(this.shieldSprite);
 
         this._id = 'actor_' + Actor.actorCounter;
         Actor.actorCounter++;
@@ -79,9 +90,14 @@ export default abstract class Actor<
 
     public set health(value: number) {
         const prevHealth = this._health;
-        this._health = Math.min(Math.max(value, 0), this.maxHealth);
+        const newHealth = Math.min(Math.max(value, 0), this.maxHealth);
 
-        if (prevHealth != this._health) {
+        if (prevHealth != newHealth) {
+            if (this._hasShield && newHealth < prevHealth) {
+                return;
+            }
+
+            this._health = newHealth;
             this.emitter.emit('healthchange', this._health);
 
             if (this._health == 0) {
@@ -115,6 +131,15 @@ export default abstract class Actor<
 
     public get maxHealth() {
         return this._maxHealth;
+    }
+
+    public get hasShield() {
+        return this._hasShield;
+    }
+
+    public set hasShield(value: boolean) {
+        this._hasShield = value;
+        this.shieldSprite.visible = value;
     }
 
     public instantKill() {

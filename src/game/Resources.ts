@@ -23,7 +23,10 @@ import brickImg from './assets/bricks.png';
 import dynamiteImg from './assets/dynamite.png';
 import timebombImg from './assets/timebomb.png';
 import bombImg from './assets/bomb.png';
+
 import tombstoneImg from './assets/tombstone.png';
+import shieldImg from './assets/shield.png';
+
 import { loadSpritesheet, loadTexture } from './loader/AssetsLoader';
 
 export default class Resources {
@@ -33,10 +36,13 @@ export default class Resources {
     public static WOOD_TEXTURE: Texture;
     public static STONE_TEXTURE: Texture;
     public static BRICK_TEXTURE: Texture;
+
     public static DYNAMITE_TEXTURE: Texture;
     public static TIMEBOMB_TEXTURE: Texture;
     public static BOMB_TEXTURE: Texture;
+
     public static TOMBSTONE_TEXTURE: Texture;
+    public static SHIELD_TEXTURE: Texture;
 
     public static EXPLOSION_SPRITESHEET: Spritesheet;
     public static CHARACTER_1: Spritesheet;
@@ -53,7 +59,9 @@ export default class Resources {
         this.DYNAMITE_TEXTURE = loadTexture(dynamiteImg);
         this.TIMEBOMB_TEXTURE = loadTexture(timebombImg);
         this.BOMB_TEXTURE = loadTexture(bombImg);
+
         this.TOMBSTONE_TEXTURE = loadTexture(tombstoneImg);
+        this.SHIELD_TEXTURE = loadTexture(shieldImg);
 
         this.EXPLOSION_SPRITESHEET = await loadSpritesheet(explosionAtlas, explosionAtlasData);
         this.CHARACTER_1 = await loadSpritesheet(character1Atlas, character1AtlasData);

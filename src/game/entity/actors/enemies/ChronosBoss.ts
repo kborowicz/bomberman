@@ -19,8 +19,8 @@ export default class ChronosBoss extends Enemy {
         this.sprite = new CharacterSprite(context.cellSize, Resources.CHARACTER_4);
         this.container.addChild(this.sprite);
 
-        this._maxHealth = 600;
-        this._health = 600;
+        this._maxHealth = 700;
+        this._health = 700;
 
         this.on('spawn', () => {
             this.spawnEnemiesTask(context);
@@ -60,23 +60,23 @@ export default class ChronosBoss extends Enemy {
                     dest: context.player.nearestCell
                 });
 
-                await sleep(300);
+                await sleep(500);
             }
         }
     }
 
     private async rebuildWallTask(context: GameContext) {
         while (this.isAlive && !context.isDestroyed) {
-            await sleep(15000);
+            await sleep(20000);
 
             const timeBomb = new TimeBomb(context, {delay: 0});
             timeBomb.spawnAt(this.nearestCell, this);
 
-            for (let i = 0; i < 4; i++) {
-                context.board.getCellAt(6 - i, 7).block = new Bricks(context);
-                context.board.getCellAt(8 + i, 7).block = new Bricks(context);
-                context.board.getCellAt(7, 6 - i).block = new Bricks(context);
-                context.board.getCellAt(7, 8 + i).block = new Bricks(context);
+            for (let i = 0; i < 3; i++) {
+                context.board.getCellAt(5 - i, 7).block = new Bricks(context);
+                context.board.getCellAt(9 + i, 7).block = new Bricks(context);
+                context.board.getCellAt(7, 5 - i).block = new Bricks(context);
+                context.board.getCellAt(7, 9 + i).block = new Bricks(context);
                 await sleep(500);
             }
 

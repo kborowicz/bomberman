@@ -5,6 +5,7 @@
   "main": "webpack.alias.js",
   "scripts": {
     "start": "webpack watch",
+    "build": "cross-env NODE_ENV=production webpack",
     "server": "http-server ./dest"
   },
   "author": "",
@@ -33,10 +34,12 @@
   },
   "dependencies": {
     "@pixi/filter-advanced-bloom": "^4.1.5",
+    "@pixi/filter-bulge-pinch": "^4.1.5",
     "@pixi/filter-color-overlay": "^4.1.5",
     "@pixi/filter-motion-blur": "^4.1.5",
     "@pixi/filter-outline": "^4.1.5",
     "@pixi/filter-shockwave": "^4.1.5",
+    "cross-env": "^7.0.3",
     "eventemitter3": "^4.0.7",
     "heap": "^0.2.7",
     "howler": "^2.2.3",
